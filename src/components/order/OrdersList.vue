@@ -42,7 +42,7 @@
     
 <script setup>
 
-    const props = defineProps(["orders"])
+    const props = defineProps(["order"])
 
 
     

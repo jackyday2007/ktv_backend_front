@@ -1,26 +1,46 @@
 <template>
     
 
-    <OrdersList
-    
-    
+    <!-- <OrdersList
+    v-for=" item in orders "
+    :key="item.id"
+    :order="item"
     >
+    
+    </OrdersList> -->
 
-    </OrdersList>
-
-
+    <button @click="orderList" >按鈕</button>
 
 </template>
     
 <script setup>
-    import axiosapi from 'axios';
+    import axiosapi from '@/plugins/axios';
     import OrdersList from '@/components/order/OrdersList.vue';
+    import { onMounted, ref } from 'vue';
 
-    const products = ref([ ]);
+    onMounted (
+        function() {
+            orderList()
+        }
+    )
 
+    const orders = ref([ ]);
 
     function orderList() {
-        axiosapi.post( "/ktvbackend/orders/allOrders", request )
+        axiosapi.post( "/ktv-app/ktvbackend/orders/allOrders")
+            .then( function( response ) {
+                console.log("response=" , response)
+                orders.value = response.data.list;
+            } )
+            .catch(
+                function( error ) {
+                    console.log(error);
+                    Swal.fire({
+                        icon: "error",
+                        text: "查詢失敗" + error.message
+                    })
+                }
+            )
     }
 
 
