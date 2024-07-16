@@ -5,7 +5,7 @@
         <span class="input-group-text" id="inputGroup-sizing-default">訂單編號</span>
         <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
         <span class="input-group-text" id="inputGroup-sizing-default">會員編號</span>
-        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+        <input v-model="memberId" @input="orderList(0)"  type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
         <span class="input-group-text" id="inputGroup-sizing-default">包廂號</span>
         <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
         <label class="input-group-text" for="inputGroupSelect01">銷費狀態</label>
@@ -69,6 +69,7 @@
     import axiosapi from '@/plugins/axios';
     import OrdersList from '@/components/order/OrdersList.vue';
     import { onMounted, ref } from 'vue';
+    import Swal from 'sweetalert2';
 
     onMounted (
         function() {
@@ -76,12 +77,43 @@
         }
     )
 
+    const total = ref(0);
+    const pages = ref(0);
     const orders = ref([ ]);
+    const current = ref(0);
+    const rows = ref(4);
+    const lastPageRows = ref(0);
+    const start = ref(0);
+    const memberId = ref("");
 
-    function orderList() {
-        axiosapi.post( "/ktv-app/ktvbackend/orders/allOrders")
+    function orderList(page) {
+        if (memberId.value === "") {
+            memberId.value = null;
+        }
+
+        //分頁計算
+        if( page ) {
+            start.value = ( page -1 ) * rows.value;
+            current.value = page;
+        } else {
+            start.value = 0;
+            current.value = 1
+        }
+
+        let request = {
+            "start": start.value,
+            "max": rows.value,
+            "dir" : false,
+            "order" : "orderId",
+            "memberId" : memberId.value
+        }
+
+        axiosapi.post( "/ktv-app/ktvbackend/orders/findTest", request)
             .then( function( response ) {
                 orders.value = response.data.list;
+                total.value = response.data.count;
+                pages.value = Math.ceil( total.value / rows.value );
+                lastPageRows.value = total.value % rows.value;
             } )
             .catch(
                 function( error ) {
