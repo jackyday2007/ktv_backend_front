@@ -6,6 +6,7 @@ import Problems from "@/views/problems/router-problems"
 const routes = [
     { name: "home-link", path: "/", component: Home },
     { name: "notfound-link", path: "/:pathMatch(.*)*", component: NotFound },
+    ...routerOrders,
     ...Problems,
 ]
 
