@@ -1,6 +1,6 @@
-import orderList from "./list.vue";
+import List from "../../components/order/OrdersList.vue";
 
 
 export default [
-    // { name="orders-list" },
+    { name: "orders-list-router", path: "/orders/list", component: List },
 ]
