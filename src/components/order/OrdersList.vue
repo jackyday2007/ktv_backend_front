@@ -1,43 +1,17 @@
 <template>
-    
-    <h3>List</h3>
-
-    <table class="table table-striped table-hover">
-        <tr>
-            <th>
-                訂單編號
-            </th>
-            <th>
-                會員編號
-            </th>
-            <th>
-                顧客編號
-            </th>
-            <th>
-                包廂號
-            </th>
-            <th>
-                銷費日期
-            </th>
-            <th>
-                開始時間
-            </th>
-            <th>
-                結束時間
-            </th>
-            <th>
-                目前銷費狀態
-            </th>
-        </tr>
-        <tr>
-            <td></td>
-        </tr>
+    <tr>
         
-    </table>
-
-
-
-
+        <td>{{ order.orderId }}</td>
+        <td>{{ order.memberId }}</td>
+        <td>{{ order.customerId }}</td>
+        <td>{{ order.room }}</td>
+        <td>{{ order.orderDate }}</td>
+        <td>{{ order.hours }}小時</td>
+        <td>{{ order.startTime }}</td>
+        <td>{{ order.endTime }}</td>
+        <td>{{ order.status }}</td>
+        
+    </tr>
 </template>
     
 <script setup>
@@ -50,4 +24,10 @@
     
 <style>
     
+
+    td {
+        text-align: center;
+    }
+
+
 </style>

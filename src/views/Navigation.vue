@@ -13,7 +13,7 @@
                     <div class="offcanvas-body">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <RouterLink :to="{ name : 'orders-list-router' }" class="nav-link active" aria-current="page" >目前訂位清單</RouterLink>
+                                <RouterLink :to="{ name : 'orders-list-router' }" class="nav-link active" aria-current="page" >訂單資訊</RouterLink>
                                 
                             </li>
                             <li class="nav-item">
