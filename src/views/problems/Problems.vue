@@ -1,15 +1,21 @@
-  <template>
-    <ProblemList></ProblemList>
+<template>
+
+  <h3>ProblemList</h3>
+  <ProblemList></ProblemList>
+  
+
+</template>
+
+<script>
+  
+  import ProblemList from '@/components/problems/problemList.vue';
+
+  
+  
 
 
-  </template>
-  
-  <script>
+</script>
 
-    import ProblemList from '@/components/problems/problemList.vue';
-  </script>
-  
-  <style scoped>
-  
-  </style>
-  
+<style scoped>
+
+</style>

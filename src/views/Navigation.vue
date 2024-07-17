@@ -16,6 +16,8 @@
                                 <RouterLink :to="{ name : 'orders-list-router' }" class="nav-link active" aria-current="page" >目前訂位清單</RouterLink>
                                 
                             </li>
+
+                            <li><RouterLink class="dropdown-item" to="/router/problems">包廂問題</RouterLink></li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Link</a>
                             </li>
@@ -25,7 +27,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark">
                                     <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><RouterLink class="dropdown-item" to="/router/problems">problems</RouterLink></li>
+                                    
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="#">Something else here</a></li>
                                 </ul>
