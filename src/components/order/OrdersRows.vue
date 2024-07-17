@@ -1,6 +1,6 @@
 <template>
 
-    <select class="form-select" id="inputGroupSelect01" :value="modelValue" @input="dochange">
+    <select class="form-select" id="inputGroupSelect01" :value="modelValue" @change="dochange">
         <option v-for=" option in options " :key="option" :value="option">{{ option }}</option>
     </select>
 

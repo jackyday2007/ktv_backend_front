@@ -30,33 +30,16 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>
-                    訂單編號
-                </th>
-                <th>
-                    會員編號
-                </th>
-                <th>
-                    顧客編號
-                </th>
-                <th>
-                    包廂號
-                </th>
-                <th>
-                    消費日期
-                </th>
-                <th>
-                    歡唱時數
-                </th>
-                <th>
-                    入場時間
-                </th>
-                <th>
-                    離場時間
-                </th>
-                <th>
-                    銷費狀態
-                </th>
+                <th>訂單編號</th>
+                <th>會員編號</th>
+                <th>顧客編號</th>
+                <th>包廂號</th>
+                <th>消費日期</th>
+                <th>歡唱時數</th>
+                <th>入場時間</th>
+                <th>離場時間</th>
+                <th>消費金額</th>
+                <th>消費狀態</th>
             </tr>
         </thead>
         <tbody>
@@ -67,7 +50,18 @@
         >
         </OrdersList>
         </tbody>
+
     </table>
+    <Paginate
+        :first-last-button="true"
+        first-button-text="&lt;&lt;"
+        last-button-text="&gt;&gt;"
+        prev-text="&lt;" next-text="&gt;"
+        :page-count="pages"
+        :initial-page="current"
+        v-model="current"
+        :click-handler="orderList">
+    </Paginate>
 
     </div>
 
@@ -81,6 +75,7 @@
     import { onMounted, ref } from 'vue';
     import Swal from 'sweetalert2';
     import OrdersRows from '@/components/order/OrdersRows.vue'
+    import Paginate from 'vuejs-paginate-next';
 
     onMounted (
         function() {
@@ -95,8 +90,8 @@
     const orders = ref([ ]);
     const current = ref(0);
     const rows = ref(4);
-    const lastPageRows = ref(0);
     const start = ref(0);
+    const lastPageRows = ref(0);
 
     // 搜尋條件
     const memberId = ref("");
@@ -140,6 +135,7 @@
 
         axiosapi.post("/ktv-app/ktvbackend/orders/findTest", request)
             .then( function( response ) {
+                console.log("response = ", response)
                 orders.value = response.data.list;
                 total.value = response.data.count;
                 pages.value = Math.ceil( total.value / rows.value );
