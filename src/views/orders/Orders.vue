@@ -11,6 +11,7 @@
         <span class="input-group-text" id="inputGroup-sizing-default">消費狀態</span>
         <!-- <input v-model="status" @input="orderList(0)" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"> -->
         <select v-model="status" @change="orderList(0)" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            <option></option>
             <option>預約</option>
             <option>等待</option>
             <option>入場</option>
@@ -99,7 +100,6 @@
     const roomId = ref("");
     const status = ref("");
 
-
     function orderList(page) {
         if (memberId.value === "") {
             memberId.value = null;
@@ -112,11 +112,12 @@
         if ( status.value === "" ) {
             status.value = null;
         }
-
+        console.log("page = ", page)
         //分頁計算
         if( page ) {
-            start.value = ( page -1 ) * rows.value;
+            start.value = page -1 ;
             current.value = page;
+            
         } else {
             start.value = 0;
             current.value = 1
@@ -135,11 +136,16 @@
 
         axiosapi.post("/ktv-app/ktvbackend/orders/findTest", request)
             .then( function( response ) {
-                console.log("response = ", response)
+                
                 orders.value = response.data.list;
                 total.value = response.data.count;
                 pages.value = Math.ceil( total.value / rows.value );
                 lastPageRows.value = total.value % rows.value;
+                console.log("response = ", response)
+                console.log("responsePost",response);
+                console.log("Orders.value",orders.value);
+                console.log("Total.value",total.value);
+                console.log("pages.value",pages.value);
             } )
             .catch(
                 function( error ) {
