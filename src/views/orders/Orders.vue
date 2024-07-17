@@ -138,7 +138,7 @@
             "status" : status.value,
         }
 
-        axiosapi.post( "/ktv-app/ktvbackend/orders/findTest", request)
+        axiosapi.post("/ktv-app/ktvbackend/orders/findTest", request)
             .then( function( response ) {
                 orders.value = response.data.list;
                 total.value = response.data.count;
