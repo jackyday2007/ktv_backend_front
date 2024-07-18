@@ -9,6 +9,7 @@
         <td>{{ order.hours }}小時</td>
         <td>{{ order.startTime }}</td>
         <td>{{ order.endTime }}</td>
+        <td>{{ order.subTotal }}</td>
         <td>{{ order.status }}</td>
         
     </tr>
