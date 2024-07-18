@@ -20,6 +20,8 @@
             <option>離場</option>
         </select>
         <label class="input-group-text" for="inputGroupSelect01">顯視筆數</label>
+        
+
         <OrdersRows
             :total="total"
             :options="[2, 3, 4, 5, 10]"
@@ -27,8 +29,9 @@
             @change="orderList">
         >
         </OrdersRows>
+        <button class="btn btn-outline-secondary, btn btn-dark" type="button" id="button-addon1" @click="newOrder">新增訂位</button>
     </div>
-
+    
     <table class="table table-striped table-hover">
         <thead>
             <tr>
@@ -54,17 +57,23 @@
         </tbody>
 
     </table>
-    <Paginate
-        :first-last-button="true"
-        first-button-text="&lt;&lt;"
-        last-button-text="&gt;&gt;"
-        prev-text="&lt;" next-text="&gt;"
-        :page-count="pages"
-        :initial-page="current"
-        v-model="current"
-        :click-handler="orderList">
-    </Paginate>
 
+
+    </div>
+    <div style="display: flex; justify-content: center;">
+        <Paginate
+            :first-last-button="true"
+            first-button-text="&lt;&lt;"
+            last-button-text="&gt;&gt;"
+            prev-text="&lt;" next-text="&gt;"
+            :page-count="pages"
+            :initial-page="current"
+            v-model="current"
+            :click-handler="orderList"
+            :container-class="'pagination'"
+            :page-class="'page-item'"
+        >
+        </Paginate>
     </div>
 
 
@@ -79,13 +88,15 @@
     import OrdersRows from '@/components/order/OrdersRows.vue'
     import Paginate from 'vuejs-paginate-next';
 
+    // =========== 開啟時載入 ===========
+
     onMounted (
         function() {
             orderList()
         }
     )
 
-
+    // ============== 變數 ==============
     // 分頁
     const total = ref(0);
     const pages = ref(0);
@@ -101,6 +112,32 @@
     const roomId = ref("");
     const status = ref("");
 
+    // ============== 功能 ==============
+
+
+    // 新增訂單編號
+    function newOrder() {
+        axiosapi.post("/ktv-app/ktvbackend/orders/createOrderId")
+        .then(function( response ) {
+
+        })
+        .catch(
+            function( error) {
+                Swal.fire({
+                    icon: error,
+                    text: "新增失敗" + error.message
+                })
+            }
+        )
+    }
+
+
+
+
+
+
+
+    // 搜尋及分頁
     function orderList(page) {
         if (memberId.value === "") {
             memberId.value = null;
@@ -164,9 +201,17 @@
 </script>
     
 <style>
+
+    
     
     tr {
         text-align: center;
+    }
+    .pagination {
+        background-color: grey,
+    }
+    .page-item {
+        background-color: grey,
     }
 
 
