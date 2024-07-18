@@ -1,39 +1,39 @@
 <template>
-  <h3>ProblemList</h3>
+    <h3>ProblemList</h3>
+   
+    <!-- <ProblemModal @submit="createProblem"></ProblemModal> -->
+   
   <div class="col-4">
-      <input type="text" placeholder="請輸入產品名稱" v-model="findName" @input="callFind(1)">
+      <input type="text" placeholder="查詢包廂事件" @input="callFind(1)">
   </div>
   <table class="table table-striped table-hover">
-    <thead>
-      <tr>
-        <th>問題編號</th>
-        <th>事件案例</th>
-        <th>包廂號碼</th>
-        <th>說明內容</th>
-        <th>發生時間</th>
-        <th>處理時間</th>
-        <th>包廂狀態</th>
-      </tr>
-    </thead>
-    <tbody>
-      <ProblemList
-        v-for="item in problems"
+      <thead>
+        <tr>
+          <th>問題編號</th>
+          <th>事件案例</th>
+          <th>包廂號碼</th>
+          <th>說明內容</th>
+          <th>發生時間</th>
+          <th>處理時間</th>
+          <th>包廂狀態</th>
+        </tr>
+      </thead>
+      <tbody>
+      <ProblemList v-for="item in problems"
         :key="item.problemId"
-        :problem="item"
-      ></ProblemList>
+        :problem="item"></ProblemList>
     </tbody>
+    
   </table>
-  
 </template>
-
-<script>
-import { ref, onMounted } from 'vue';
-import axiosapi from '@/plugins/axios';
-
-import Swal from 'sweetalert2';
-import ProblemList from '@/components/problems/ProblemList.vue';
-
-    const findName = ref("");
+  
+<script setup >
+  import ProblemList from '@/components/problems/ProblemList.vue';
+  import ProblemModal from '@/components/problems/ProblemModal.vue';
+  import { ref, onMounted } from 'vue';
+  import axiosapi from '@/plugins/axios';
+  import Swal from 'sweetalert2';
+  const findName = ref("");
 
    //分頁 Start
     const total = ref(0);   //總資料筆數
@@ -46,6 +46,7 @@ import ProblemList from '@/components/problems/ProblemList.vue';
 
     const problems = ref([]);
     const problem = ref({});
+    const problemModal = ref(null);
 
     onMounted (
         function() {
@@ -69,14 +70,14 @@ import ProblemList from '@/components/problems/ProblemList.vue';
     }
 
     let request = {
-        // "start":start.value,
-        // "max":rows.value,
-        // "dir":false,
-        // "order":"room",
-        // "name":findName.value
+        "start":start.value,
+        "max":rows.value,
+        "dir":false,
+        "order":"room",
+        "name":findName.value
     }
 
-      axiosapi.post('/ktv-app/problems/findAll', request).then(function(response){
+    axiosapi.post('/ktv-app/problems/findAll', request).then(function(response){
           console.log('response=', response);
           problems.value = response.data.list;
           total.value = response.data.count;
@@ -93,12 +94,17 @@ import ProblemList from '@/components/problems/ProblemList.vue';
               text: '查詢失敗: ' + error.message,
             });
         });
-    };
+    }
 
+    function createProblem(problem){
+      axiosapi("/problems/create" , problem).then(function(response){
 
+      }).catch(function(error){
+
+      });
+    }
 </script>
-
+  
 <style>
-
-
+  
 </style>
