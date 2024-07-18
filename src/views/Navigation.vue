@@ -17,7 +17,7 @@
                                 
                             </li>
 
-                            <li><RouterLink class="dropdown-item" to="/router/problems">包廂問題</RouterLink></li>
+                            <li><RouterLink class="dropdown-item" to="/router/problems">問題管理</RouterLink></li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Link</a>
                             </li>
