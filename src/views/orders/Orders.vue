@@ -80,7 +80,8 @@
         ref="orderModal"
         v-model="order" 
         @order-update="modifyOrder"
-        @checkIn="modifyOrder"
+        @check-in="checkIn"
+        @on-check-in="onCheckIn"
     >
     </OrderModel>
     
@@ -139,8 +140,12 @@
         }
     }
 
-    function orderchange() {
-        openModal("createOrder",)
+    function checkIn() {
+        console.log("checkIn")
+    }
+
+    function onCheckIn() {
+        console.log("onCheckIn")
     }
 
 

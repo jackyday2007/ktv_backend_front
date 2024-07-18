@@ -81,7 +81,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-success" @click="emits('orderUpdate')" v-show="modelValue.status == ''">確定預約</button>
                 <button type="button" class="btn btn-outline-success" @click="emits('checkIn')" v-show="modelValue.status == '預約' " >報到</button>
-                <button type="button" class="btn btn-outline-danger" @click="emits('wattiing')" v-show="modelValue.status == '預約' " >取消預約</button>
+                <button type="button" class="btn btn-outline-danger" @click="emits('onCheckIn')" v-show="modelValue.status == '預約' " >取消預約</button>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
             </div>
         </div>
@@ -97,7 +97,7 @@
 
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
-    const emits = defineEmits(["orderUpdate", "checkIn", "update:modelValue"])
+    const emits = defineEmits(["orderUpdate", "checkIn", "onCheckIn", "update:modelValue"])
     const exampleRef = ref(null);
     const exampleModal = ref(null);
     
