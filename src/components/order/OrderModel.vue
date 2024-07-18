@@ -36,21 +36,28 @@
 
             <div class="modal-body, input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">消費日期</span>
-                <input @input="doinput('orderDate', $event)" type="text" :value="modelValue.orderDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                <input @input="doinput('orderDate', $event)" type="text" :disabled="modelValue.status === '預約'" :value="modelValue.orderDate" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
 
             <div class="modal-body, input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">歡唱時數</span>
-                <input @input="doinput('hours', $event)" type="text" :value="modelValue.hours" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+                <input 
+                @input="doinput('hours', $event)" 
+                :disabled="modelValue.status === '預約'"
+                :value="modelValue.hours"
+                type="text"
+                class="form-control"
+                aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-default">
             </div>
 
             <div class="modal-body, input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">消費時段</span>
                 <input 
-                @input="doinput('startTime', $event)" 
-                type="text"
-                :disabled="modelValue.startTime !== null && modelValue.startTime !== ''"
+                @input="doinput('startTime', $event)"
+                :disabled="modelValue.status === '預約'"
                 :value="modelValue.startTime"
+                type="text"
                 class="form-control"
                 aria-label="Sizing example input"
                 aria-describedby="inputGroup-sizing-default">
@@ -73,7 +80,8 @@
             
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-success" @click="emits('orderUpdate')" v-show="modelValue.status == ''">確定預約</button>
-                <button type="button" class="btn btn-outline-success" @click="emits('wattiing')" v-show="modelValue.status == '預約' " >報到</button>
+                <button type="button" class="btn btn-outline-success" @click="emits('checkIn')" v-show="modelValue.status == '預約' " >報到</button>
+                <button type="button" class="btn btn-outline-danger" @click="emits('wattiing')" v-show="modelValue.status == '預約' " >取消預約</button>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
             </div>
         </div>
@@ -89,7 +97,7 @@
 
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
-    const emits = defineEmits(["orderUpdate","wattiing" , "update:modelValue"])
+    const emits = defineEmits(["orderUpdate", "checkIn", "update:modelValue"])
     const exampleRef = ref(null);
     const exampleModal = ref(null);
     

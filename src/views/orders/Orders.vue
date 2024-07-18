@@ -80,7 +80,7 @@
         ref="orderModal"
         v-model="order" 
         @order-update="modifyOrder"
-        @watting="modifyOrder"
+        @checkIn="modifyOrder"
     >
     </OrderModel>
     
@@ -217,6 +217,7 @@
                     text: response.data.message
                 }).then(function(result) {
                     orderModal.value.hideModal();
+                    orderList(current.value)
                 })
             } else {
                 Swal.fire({
