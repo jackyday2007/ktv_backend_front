@@ -24,7 +24,7 @@
                 <input @input="doinput('memberId', $event)" type="text" :value="modelValue.memberId" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
 
-            <div class="modal-body, input-group mb-3">
+            <div class="modal-body, input-group mb-3" v-if="modelValue.status != ''">
                 <span class="input-group-text" id="inputGroup-sizing-default">&nbsp;包&nbsp;廂&nbsp;號&nbsp;</span>
                 <input @input="doinput('room', $event)" type="text" :value="modelValue.room" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
@@ -49,23 +49,24 @@
                 <input @input="doinput('startTime', $event)" type="text" :value="modelValue.startTime" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
 
-            <div class="modal-body, input-group mb-3" v-if="modelValue.status === null">
+            <div class="modal-body, input-group mb-3" v-if="modelValue.status != ''">
                 <span class="input-group-text" id="inputGroup-sizing-default">離場時間</span>
                 <input type="text" :value="modelValue.endTime" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
 
-            <div class="modal-body, input-group mb-3" v-if="modelValue.status === null">
+            <div class="modal-body, input-group mb-3" v-if="modelValue.status != ''">
                 <span class="input-group-text" id="inputGroup-sizing-default">消費狀態</span>
                 <input type="text" :value="modelValue.status" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
 
-            <div class="modal-body, input-group mb-3" v-if="modelValue.status === null">
+            <div class="modal-body, input-group mb-3" v-if="modelValue.status != ''">
                 <span class="input-group-text" id="inputGroup-sizing-default">消費金額</span>
                 <input type="text" :value="modelValue.subTotal" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
             
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-success" @click="emits('orderUpdate')">確定預約</button>
+                <button type="button" class="btn btn-outline-success" @click="emits('orderUpdate')" v-if="modelValue.status == ''">確定預約</button>
+                <button type="button" class="btn btn-outline-success" @click="emits('wattiing')" v-if="modelValue.status == '預約' " >報到</button>
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
             </div>
         </div>
@@ -81,7 +82,7 @@
 
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
-    const emits = defineEmits(["orderUpdate", "update:modelValue"])
+    const emits = defineEmits(["orderUpdate","wattiing" , "update:modelValue"])
     const exampleRef = ref(null);
     const exampleModal = ref(null);
     
@@ -89,8 +90,6 @@
 
     // =========== 開啟時載入 ===========
     
-    console.log("exampleRef = ", exampleRef)
-
     onMounted(
         function() {
             exampleModal.value = new bootstrap.Modal(exampleRef.value);

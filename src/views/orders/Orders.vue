@@ -49,8 +49,9 @@
         <tbody>
         <OrdersList
             v-for=" item in orders "
-            :key="item.id"
+            :key="item.orderId"
             :order="item"
+            @dblclick="openModal('watting',item.orderId)"
         >
         </OrdersList>
         </tbody>
@@ -78,6 +79,7 @@
     ref="orderModal"
     v-model="order" 
     @order-update="modifyOrder"
+    
     >
     </OrderModel>
 
@@ -117,7 +119,6 @@
     const status = ref("");
 
     //按鈕條件
-    // const isShowInsertButton = ref(false);
     const orderModal = ref(null);
 
     // 存放資料變數
@@ -127,17 +128,17 @@
 
     // modal條件
     function openModal(action, id) {
-        console.log("action = ", action)
-        console.log("id = ", id)
+        console.log("openModal.id = ",id)
         if(action==='insert') {
-            // isShowInsertButton.value = true;
             order.value = { };
         } else {
-            // isShowInsertButton.value = false;
             callFindByOrderId(id);
         }
-        console.log("orderModal.value = ", orderModal.value.showModal())
         orderModal.value.showModal();
+    }
+
+    function orderchange() {
+        openModal("createOrder",)
     }
 
 
@@ -193,9 +194,6 @@
         if ( order.value.subTotal == "" ) {
             order.value.subTotal = null
         }
-
-        console.log("安安你好")
-
         axiosapi.put( `/ktv-app/ktvbackend/orders/newOrder/${order.value.orderId}`, order.value )
         .then(function(response) {
             console.log("modifyOrder.response = ", response);

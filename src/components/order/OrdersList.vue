@@ -1,6 +1,5 @@
 <template>
-    <tr>
-        
+    <tr @click="">
         <td>{{ order.orderId }}</td>
         <td>{{ order.memberId }}</td>
         <td>{{ order.customerId }}</td>
@@ -11,7 +10,6 @@
         <td>{{ order.endTime }}</td>
         <td>{{ order.subTotal }}</td>
         <td>{{ order.status }}</td>
-        
     </tr>
 </template>
     
