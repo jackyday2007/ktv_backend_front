@@ -54,9 +54,10 @@
             @dblclick="openModal('watting',item.orderId)"
         >
         </OrdersList>
+        
         </tbody>
     </table>
-
+    
 
     </div>
     <div style="display: flex; justify-content: center;">
@@ -76,13 +77,13 @@
     </div>
 
     <OrderModel
-    ref="orderModal"
-    v-model="order" 
-    @order-update="modifyOrder"
-    
+        ref="orderModal"
+        v-model="order" 
+        @order-update="modifyOrder"
+        @watting="modifyOrder"
     >
     </OrderModel>
-
+    
 </template>
     
 <script setup>
@@ -131,10 +132,11 @@
         console.log("openModal.id = ",id)
         if(action==='insert') {
             order.value = { };
+            orderModal.value.showModal();
         } else {
             callFindByOrderId(id);
+            orderModal.value.showModal();
         }
-        orderModal.value.showModal();
     }
 
     function orderchange() {
@@ -179,8 +181,16 @@
 
     function modifyOrder() {
 
+        if ( order.value.numberOfPersons == "" ) {
+            order.value.numberOfPersons = null
+        }
+
         if ( order.value.customerId == "" ) {
             order.value.customerId = null
+        }
+
+        if ( order.value.orderDate == "" ) {
+            order.value.orderDate = null
         }
 
         if ( order.value.memberId == "" ) {
@@ -191,10 +201,14 @@
             order.value.room = null
         }
 
+        if ( order.value.startTime == "" ) {
+            order.value.startTime = null
+        }
+
         if ( order.value.subTotal == "" ) {
             order.value.subTotal = null
         }
-        axiosapi.put( `/ktv-app/ktvbackend/orders/newOrder/${order.value.orderId}`, order.value )
+        axiosapi.post( `/ktv-app/ktvbackend/orders/newOrder/${order.value.orderId}`, order.value )
         .then(function(response) {
             console.log("modifyOrder.response = ", response);
             if ( response.data.success ) {
@@ -287,12 +301,7 @@
     tr {
         text-align: center;
     }
-    .pagination {
-        background-color: grey,
-    }
-    .page-item {
-        background-color: grey,
-    }
+
 
 
 </style>
