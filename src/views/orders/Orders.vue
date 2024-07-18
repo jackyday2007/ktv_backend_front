@@ -10,7 +10,6 @@
         <span class="input-group-text" id="inputGroup-sizing-default">包廂號</span>
         <input v-model="roomId" @input="orderList(0)" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
         <span class="input-group-text" id="inputGroup-sizing-default">消費狀態</span>
-        <!-- <input v-model="status" @input="orderList(0)" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default"> -->
         <select v-model="status" @change="orderList(0)" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             <option></option>
             <option>預約</option>
@@ -55,7 +54,6 @@
         >
         </OrdersList>
         </tbody>
-
     </table>
 
 
@@ -76,7 +74,12 @@
         </Paginate>
     </div>
 
-
+    <OrderModel
+    ref="orderModal"
+    v-model="order" 
+    @order-update="modifyOrder"
+    >
+    </OrderModel>
 
 </template>
     
@@ -87,7 +90,8 @@
     import Swal from 'sweetalert2';
     import OrdersRows from '@/components/order/OrdersRows.vue'
     import Paginate from 'vuejs-paginate-next';
-
+    import OrderModel from '@/components/order/OrderModel.vue'
+    
     // =========== 開啟時載入 ===========
 
     onMounted (
@@ -112,19 +116,42 @@
     const roomId = ref("");
     const status = ref("");
 
+    //按鈕條件
+    // const isShowInsertButton = ref(false);
+    const orderModal = ref(null);
+
+    // 存放資料變數
+    const order = ref({ });
+
     // ============== 功能 ==============
+
+    // modal條件
+    function openModal(action, id) {
+        console.log("action = ", action)
+        console.log("id = ", id)
+        if(action==='insert') {
+            // isShowInsertButton.value = true;
+            order.value = { };
+        } else {
+            // isShowInsertButton.value = false;
+            callFindByOrderId(id);
+        }
+        console.log("orderModal.value = ", orderModal.value.showModal())
+        orderModal.value.showModal();
+    }
 
 
     // 新增訂單編號
     function newOrder() {
         axiosapi.post("/ktv-app/ktvbackend/orders/createOrderId")
         .then(function( response ) {
-
+            console.log("response", response)
+            openModal("createOrder",response.data.orderId)
         })
         .catch(
             function( error) {
                 Swal.fire({
-                    icon: error,
+                    icon: "error",
                     text: "新增失敗" + error.message
                 })
             }
@@ -132,8 +159,68 @@
     }
 
 
+    // 尋找訂單編號
+    function callFindByOrderId( id ) {
+        console.log("callFindByOrderId = ", id);
+        axiosapi.get(`/ktv-app/ktvbackend/orders/${id}`)
+        .then(function(response) {
+            console.log("callFindByOrderId.response = ", response);
+            order.value = response.data;
+            console.log("order.value = ", order.value)
+        })
+        .catch(function(error) {
+            Swal.fire({
+                icon: "error",
+                text: "查詢失敗" + error.message
+            })
+        })
+    }
 
+    function modifyOrder() {
 
+        if ( order.value.customerId == "" ) {
+            order.value.customerId = null
+        }
+
+        if ( order.value.memberId == "" ) {
+            order.value.memberId = null
+        }
+
+        if ( order.value.room == "" ) {
+            order.value.room = null
+        }
+
+        if ( order.value.subTotal == "" ) {
+            order.value.subTotal = null
+        }
+
+        console.log("安安你好")
+
+        axiosapi.put( `/ktv-app/ktvbackend/orders/newOrder/${order.value.orderId}`, order.value )
+        .then(function(response) {
+            console.log("modifyOrder.response = ", response);
+            if ( response.data.success ) {
+                Swal.fire({
+                    icon: "success",
+                    text: response.data.message
+                }).then(function(result) {
+                    orderModal.value.hideModal();
+                })
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    text: response.data.message,
+                })
+            }
+        })
+        .catch(function(error){
+            Swal.fire({
+                icon:"error",
+                text:error.message
+            })
+        })
+
+    }
 
 
 
@@ -150,7 +237,7 @@
         if ( status.value === "" ) {
             status.value = null;
         }
-        console.log("page = ", page)
+
         //分頁計算
         if( page ) {
             start.value = page -1 ;
@@ -172,18 +259,13 @@
             "status" : status.value,
         }
 
-        axiosapi.post("/ktv-app/ktvbackend/orders/findTest", request)
+        axiosapi.post("/ktv-app/ktvbackend/orders/find", request)
             .then( function( response ) {
                 
                 orders.value = response.data.list;
                 total.value = response.data.count;
                 pages.value = Math.ceil( total.value / rows.value );
                 lastPageRows.value = total.value % rows.value;
-                console.log("response = ", response)
-                console.log("responsePost",response);
-                console.log("Orders.value",orders.value);
-                console.log("Total.value",total.value);
-                console.log("pages.value",pages.value);
             } )
             .catch(
                 function( error ) {
