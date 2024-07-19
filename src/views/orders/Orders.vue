@@ -52,7 +52,7 @@
             v-for=" item in orders "
             :key="item.orderId"
             :order="item"
-            @dblclick="openModal('watting',item.orderId)"
+            @dblclick="openModal('watting', item.orderId)"
         >
         </OrdersList>
         
@@ -79,7 +79,7 @@
 
     <OrderModel
         ref="orderModal"
-        v-model="order" 
+        v-model="order"
         @order-update="modifyOrder"
         @check-in="checkIn"
         @on-check-in="onCheckIn"
@@ -110,7 +110,7 @@
     // 分頁
     const total = ref(0);
     const pages = ref(0);
-    const orders = ref([ ]);
+    const orders = ref({ });
     const current = ref(0);
     const rows = ref(4);
     const start = ref(0);
@@ -128,11 +128,13 @@
     // 存放資料變數
     const order = ref({ });
 
+    console.log("order = " , order);
+
     // ============== 功能 ==============
 
     // modal條件
     function openModal(action, id) {
-        console.log("openModal.id = ",id)
+        console.log("openModal.id = ", id)
         if(action==='insert') {
             order.value = { };
             orderModal.value.showModal();
@@ -148,8 +150,10 @@
         axiosapi.get(`/ktv-app/ktvbackend/orders/${id}`)
         .then(function(response) {
             console.log("callFindByOrderId.response = ", response);
-            order.value = response.data;
-            console.log("order.value = ", order.value)
+            console.log("callFindByOrderId.response.list = ", response.data.list);
+            order.value = response.data.list[0];
+            console.log("response.data.list[0].room = ", response.data.list[0].room)
+            console.log("order.value.room = ", order.value.room)
         })
         .catch(function(error) {
             Swal.fire({
@@ -301,6 +305,9 @@
         if ( order.value.room == "" ) {
             order.value.room = null
         }
+        if ( order.value.memberId == "" ) {
+            order.value.memberId = null
+        }
         axiosapi.put( `/ktv-app/ktvbackend/orders/inTheRoom/${order.value.orderId}`, order.value )
         .then(function(response) {
             console.log("modifyOrder.response = ", response);
@@ -309,10 +316,12 @@
                     icon: "success",
                     text: response.data.message
                 }).then(function(result) {
+                    console.log("order.value.result", order.value)
                     orderModal.value.hideModal();
                     orderList(current.value)
                 })
             } else {
+                console.log("order.value.else", order.value)
                 Swal.fire({
                     icon: "warning",
                     text: response.data.message,
@@ -320,6 +329,7 @@
             }
         })
         .catch(function(error){
+            console.log("order.value.error", order.value)
             Swal.fire({
                 icon:"error",
                 text:error.message

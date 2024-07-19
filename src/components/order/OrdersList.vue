@@ -1,5 +1,5 @@
 <template>
-    <tr @click="">
+    <tr>
         <td>{{ order.orderId }}</td>
         <td>{{ order.memberId }}</td>
         <td>{{ order.customerId }}</td>
@@ -14,9 +14,12 @@
 </template>
     
 <script setup>
-
+    
+    // ============ 變數 ============
     const props = defineProps(["order"])
+    
 
+    
 
     
 </script>
