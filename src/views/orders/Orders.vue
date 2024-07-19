@@ -13,10 +13,11 @@
         <select v-model="status" @change="orderList(0)" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             <option></option>
             <option>預約</option>
-            <option>等待</option>
-            <option>入場</option>
+            <option>報到</option>
+            <option>消費中</option>
             <option>結帳</option>
             <option>離場</option>
+            <option>取消預約</option>
         </select>
         <label class="input-group-text" for="inputGroupSelect01">顯視筆數</label>
         
@@ -82,6 +83,7 @@
         @order-update="modifyOrder"
         @check-in="checkIn"
         @on-check-in="onCheckIn"
+        @in-the-room="inTheRoom"
     >
     </OrderModel>
     
@@ -140,33 +142,6 @@
         }
     }
 
-    function checkIn() {
-        console.log("checkIn")
-    }
-
-    function onCheckIn() {
-        console.log("onCheckIn")
-    }
-
-
-    // 新增訂單編號
-    function newOrder() {
-        axiosapi.post("/ktv-app/ktvbackend/orders/createOrderId")
-        .then(function( response ) {
-            console.log("response", response)
-            openModal("createOrder",response.data.orderId)
-        })
-        .catch(
-            function( error) {
-                Swal.fire({
-                    icon: "error",
-                    text: "新增失敗" + error.message
-                })
-            }
-        )
-    }
-
-
     // 尋找訂單編號
     function callFindByOrderId( id ) {
         console.log("callFindByOrderId = ", id);
@@ -184,36 +159,46 @@
         })
     }
 
-    function modifyOrder() {
+    // ============ 新增訂單 =================
+    function newOrder() {
+        axiosapi.post("/ktv-app/ktvbackend/orders/createOrderId")
+        .then(function( response ) {
+            console.log("response", response)
+            openModal("createOrder",response.data.orderId)
+        })
+        .catch(
+            function( error) {
+                Swal.fire({
+                    icon: "error",
+                    text: "新增失敗" + error.message
+                })
+            }
+        )
+    }
 
+    function modifyOrder() {
         if ( order.value.numberOfPersons == "" ) {
             order.value.numberOfPersons = null
         }
-
         if ( order.value.customerId == "" ) {
             order.value.customerId = null
         }
-
         if ( order.value.orderDate == "" ) {
             order.value.orderDate = null
         }
-
         if ( order.value.memberId == "" ) {
             order.value.memberId = null
         }
-
         if ( order.value.room == "" ) {
             order.value.room = null
         }
-
         if ( order.value.startTime == "" ) {
             order.value.startTime = null
         }
-
         if ( order.value.subTotal == "" ) {
             order.value.subTotal = null
         }
-        axiosapi.post( `/ktv-app/ktvbackend/orders/newOrder/${order.value.orderId}`, order.value )
+        axiosapi.put( `/ktv-app/ktvbackend/orders/newOrder/${order.value.orderId}`, order.value )
         .then(function(response) {
             console.log("modifyOrder.response = ", response);
             if ( response.data.success ) {
@@ -240,7 +225,108 @@
 
     }
 
+    // 客戶報到
+    function checkIn() {
+        console.log("checkIn")
+        if ( order.value.customerId == "" ) {
+            order.value.customerId = null
+        }
+        if ( order.value.memberId == "" ) {
+            order.value.memberId = null
+        }
+        if ( order.value.room == "" ) {
+            order.value.room = null
+        }
+        if ( order.value.numberOfPersons == "" ) {
+            order.value.numberOfPersons = null
+        }
+        axiosapi.put( `/ktv-app/ktvbackend/orders/checkIn/${order.value.orderId}`, order.value )
+        .then(function(response) {
+            console.log("modifyOrder.response = ", response);
+            if ( response.data.success ) {
+                Swal.fire({
+                    icon: "success",
+                    text: response.data.message
+                }).then(function(result) {
+                    orderModal.value.hideModal();
+                    orderList(current.value)
+                })
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    text: response.data.message,
+                })
+            }
+        })
+        .catch(function(error){
+            Swal.fire({
+                icon:"error",
+                text:error.message
+            })
+        })
+    }
 
+    function onCheckIn() {
+        console.log("onCheckIn")
+        axiosapi.post( `/ktv-app/ktvbackend/orders/noCheckIn/${order.value.orderId}`, order.value )
+        .then(function(response) {
+            console.log("modifyOrder.response = ", response);
+            if ( response.data.success ) {
+                Swal.fire({
+                    icon: "success",
+                    text: response.data.message
+                }).then(function(result) {
+                    orderModal.value.hideModal();
+                    orderList(current.value)
+                })
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    text: response.data.message,
+                })
+            }
+        })
+        .catch(function(error){
+            Swal.fire({
+                icon:"error",
+                text:error.message
+            })
+        })
+        
+    }
+
+    // 進入包廂
+    function inTheRoom() {
+        console.log("進入包廂")
+        if ( order.value.room == "" ) {
+            order.value.room = null
+        }
+        axiosapi.put( `/ktv-app/ktvbackend/orders/inTheRoom/${order.value.orderId}`, order.value )
+        .then(function(response) {
+            console.log("modifyOrder.response = ", response);
+            if ( response.data.success ) {
+                Swal.fire({
+                    icon: "success",
+                    text: response.data.message
+                }).then(function(result) {
+                    orderModal.value.hideModal();
+                    orderList(current.value)
+                })
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    text: response.data.message,
+                })
+            }
+        })
+        .catch(function(error){
+            Swal.fire({
+                icon:"error",
+                text:error.message
+            })
+        })
+
+    }
 
     // 搜尋及分頁
     function orderList(page) {
