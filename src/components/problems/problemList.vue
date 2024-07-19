@@ -20,7 +20,6 @@ const props = defineProps(["problem"]);
 const emits = defineEmits(["problemUpdate"]);
 
 function handleUpdate(){
-    console.log("---",props);
     emits('problemUpdate', props.problem.problemId);
     
 }
