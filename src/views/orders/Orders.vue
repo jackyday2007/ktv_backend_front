@@ -86,7 +86,7 @@
         @in-the-room="inTheRoom"
     >
     </OrderModel>
-    
+
 </template>
     
 <script setup>
@@ -97,6 +97,7 @@
     import OrdersRows from '@/components/order/OrdersRows.vue'
     import Paginate from 'vuejs-paginate-next';
     import OrderModel from '@/components/order/OrderModel.vue'
+    
     
     // =========== 開啟時載入 ===========
 
@@ -344,6 +345,10 @@
             memberId.value = null;
         }
 
+        if (roomId.value === "") {
+            roomId.value = null;
+        }
+
         if (orderId.value === "") {
             orderId.value = null;
         }
@@ -368,7 +373,7 @@
             "dir" : false,
             "order" : "orderId",
             "memberId" : memberId.value,
-            "roomId" : roomId.value,
+            "room" : roomId.value,
             "orderId" : orderId.value,
             "status" : status.value,
         }
