@@ -195,7 +195,7 @@
                     @show-menu-offcanvas="showMenuOffcanvas"
                     ></OrderMenu>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
-                    
+                    <button @click="allOrderMenu"></button>
                 </div>
             </div>
             
@@ -212,7 +212,7 @@
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
     import CustomerCheck from "../customer/CustomerCheck.vue";
-    import MemberCheck from "../members/MemberCheck.vue";
+    import MemberCheck from "../members/memberCheck.vue";
     import OrderMenu from "@/components/menu/orderMenu.vue"
 
     // ============== 變數 ==============
