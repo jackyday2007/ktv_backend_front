@@ -36,8 +36,8 @@
 </template>
     
 <script setup >
-    import RoomList from '@/components/room/RoomList.vue';
-    import RoomsModal from '@/components/room/RoomsModal.vue'
+    import RoomList from '@/components/rooms/RoomList.vue';
+    import RoomsModal from '@/components/rooms/RoomsModal.vue'
     import axiosapi from '@/plugins/axios';
     import { ref , onMounted } from 'vue';
     import Swal from 'sweetalert2';
