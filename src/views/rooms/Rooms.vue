@@ -146,7 +146,7 @@
                     text: response.data.message,
                 }).then(function(result) {
                   roomRef.value.hideModal();
-                    callFind(current.value);
+                    callAll(current.value);
                 });
             } else {
                 Swal.fire({

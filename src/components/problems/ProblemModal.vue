@@ -28,11 +28,11 @@
               </tr>
               <tr>
                 <td>發生日期 :</td>
-                <td><input type="text" name="eventDate" :value="modelValue.eventDate" @input="doinput('eventDate',$event)"></td>
+                <td><input type="date" name="eventDate" :value="modelValue.eventDate" @input="doinput('eventDate',$event)" class="col-lg-12"></td>
               </tr>
               <tr>
                 <td>結案日期 :</td>
-                <td><input type="text" name="closeDate" :value="modelValue.closeDate" @input="doinput('closeDate',$event)"></td>
+                <td><input type="date" name="closeDate" :value="modelValue.closeDate" @input="doinput('closeDate',$event)" class="col-lg-12"></td>
               </tr>
               <tr>
                 <td>處理狀態 :</td>

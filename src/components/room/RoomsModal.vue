@@ -18,7 +18,11 @@
               </tr>
               <tr>
                 <td>包廂狀態 :</td>
-                <td><input type="text" name="status" :value="modelValue.status" @input="doinput('status',$event)"></td>
+                <td><select name="status" :value="modelValue.status" @input="doinput('status',$event)" class="col-lg-12">
+                  <option>使用中</option>
+                  <option>可使用</option>
+                  <option>維護中</option>
+                </select></td>
               </tr>
               <tr>
                 <td>包廂大小 :</td>
