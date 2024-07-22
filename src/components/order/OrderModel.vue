@@ -50,14 +50,6 @@
                     class="form-control"
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
-                    <input
-                    v-if="modelValue.memberId !== ''"
-                    :value="modelValue.memberId"
-                    disabled
-                    type="text"
-                    class="form-control"
-                    aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default">
                 </div>
 
                 <div class="modal-body, input-group mb-3" v-show="modelValue.status !== '消費中'">
@@ -119,16 +111,31 @@
                     aria-describedby="inputGroup-sizing-default">
                 </div>
 
-                <div class="modal-body, input-group mb-3">
+                <div class="modal-body, input-group mb-3" >
                     <span class="input-group-text" id="inputGroup-sizing-default">消費時段</span>
                     <input 
-                    @input="doinput('startTime', $event)"
-                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中'"
+                    v-shoe="modelValue.status != ''"
+                    disabled
                     :value="modelValue.startTime"
                     type="text"
                     class="form-control"
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
+                </div>
+
+                <div class="modal-body, input-group mb-3" v-show="modelValue.status == ''">
+                    <span class="input-group-text" id="inputGroup-sizing-default">消費時段</span>
+                    <select
+                    class="form-select"
+                    id="inputGroupSelect01"
+                    :value="modelValue.startTime"
+                    @input="doinput('startTime', $event)"
+                    >
+                        <option></option>
+                        <option v-for=" item in timeSolt" :key="item.startTime">
+                        {{ item.startTime }}
+                        </option>
+                    </select>
                 </div>
 
                 <div class="modal-body, input-group mb-3" v-show="modelValue.status != ''">
@@ -203,6 +210,7 @@
     const customer = ref({ })
     const result = ref()
     const customerKey = ref(0);
+    const timeSolt = ref([]);
 
     // =========== 開啟時載入 ===========
     
@@ -210,6 +218,7 @@
         function() {
             exampleModal.value = new bootstrap.Modal(exampleRef.value);
             roomList();
+            timeList();
         }
     );
 
@@ -235,6 +244,21 @@
     });
 
     // ============ 方法 ============
+
+    function timeList() {
+        let request = {}
+        axiosapi.post("/ktv-app/timeSlot/allTime", request)
+            .then( function(response) {
+                timeSolt.value = response.data.list
+            })
+            .catch(function(error) {
+                console.log("error", error.message)
+            })
+
+    }
+
+
+
     function roomList() {
         let request = {}
         axiosapi.post("/ktv-app/rooms/findAll", request)
