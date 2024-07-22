@@ -190,12 +190,11 @@
                     <OrderMenu
                     v-if="modelValue.status == '消費中'"
                     ref="menuModal"
-                    v-model="customer"
-                    :result-menu="result"
+                    v-model="orderMenu"
                     @show-menu-offcanvas="showMenuOffcanvas"
                     ></OrderMenu>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
-                    <button @click="allOrderMenu"></button>
+                    <button >test</button>
                 </div>
             </div>
             
@@ -211,8 +210,8 @@
     import { ref, onMounted } from 'vue'
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
-    import CustomerCheck from "../customer/CustomerCheck.vue";
-    import MemberCheck from "../members/memberCheck.vue";
+    import CustomerCheck from "@/components/customer/CustomerCheck.vue";
+    import MemberCheck from "@/components/members/memberCheck.vue";
     import OrderMenu from "@/components/menu/orderMenu.vue"
 
     // ============== 變數 ==============
@@ -418,19 +417,7 @@
     }
 
 
-    function allOrderMenu() {
-        let request= {
-            "start": 0,
-            "max": 68,
-            "dir" : false,
-            "order" : "itemId"
-        }
-        axiosapi.post("/ktv-app/orderMenu/allMenu", request)
-                .then(function(response) {
-                    console.log("orderMenu = ", response.data)
-                })
-                .catch()
-    }
+
 
 
 
