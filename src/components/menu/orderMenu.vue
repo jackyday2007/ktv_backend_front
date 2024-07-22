@@ -9,9 +9,25 @@
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="menuOffcanvas" aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasRightLabel">會員資訊</h5>
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">菜單</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
+
+
+        <table>
+            <tr>
+                <th>品項</th>
+                <th>品名</th>
+                <th>容量</th>
+                <th>價格</th>
+            </tr>
+        </table>
+
+
+
+
+
+
         <div class="offcanvas-body">
             <div class="modal-body, input-group mb-3" >
                     <span class="input-group-text" id="inputGroup-sizing-default">會&nbsp;員&nbsp;編&nbsp;號</span>
@@ -40,7 +56,7 @@
     import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min.js"
     import { ref, onMounted } from 'vue'
 
-    const props = defineProps(["resultMenu", "modelValue"]);
+    const props = defineProps(["menu", "resultMenu", "modelValue"]);
     const emits = defineEmits(["showMenuOffcanvas", "update:modelValue"]);
 
     onMounted(() => {

@@ -232,6 +232,7 @@
     const memberOffcanvas = ref(null)
     const menuOffcanvas = ref(null)
     const menuModal = ref(null)
+    const orderMenu = ref({ })
 
     // =========== 開啟時載入 ===========
     
@@ -415,6 +416,27 @@
             result.value = "請輸入電話號碼"
         }
     }
+
+
+    function allOrderMenu() {
+        let request= {
+            "start": 0,
+            "max": 68,
+            "dir" : false,
+            "order" : "itemId"
+        }
+        axiosapi.post("/ktv-app/orderMenu/allMenu", request)
+                .then(function(response) {
+                    console.log("orderMenu = ", response.data)
+                })
+                .catch()
+    }
+
+
+
+
+
+
 
 
     
