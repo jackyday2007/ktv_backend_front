@@ -1,7 +1,13 @@
 <template>
-    <button class="btn btn-outline-secondary " type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">檢查</button>
+    <button
+    @click="showCustomerOffcanvas"
+    class="btn btn-outline-secondary"
+    type="button"
+    data-bs-toggle="offcanvas"
+    data-bs-target="#customerOffcanvas"
+    aria-controls="offcanvasRight">檢查</button>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="customerOffcanvas" aria-labelledby="offcanvasRightLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasRightLabel">顧客資訊</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -48,7 +54,6 @@
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
             </div>
-            <p></p>
             <div>
                 <p style="color: red;" v-show="result != null" >{{ result }}</p>
                 <button type="button" class="btn btn-outline-secondary" @click="emits('checkCustomerId')">查詢</button>
@@ -59,9 +64,16 @@
 </template>
     
 <script setup>
-
+    import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min.js"
+    import { ref, onMounted } from 'vue'
+    
     const props = defineProps(["result", "modelValue"]);
-    const emits = defineEmits(["customerInsert", "checkCustomerId", "update:modelValue"]);
+    const emits = defineEmits(["showCustomerOffcanvas","customerInsert", "checkCustomerId", "update:modelValue"]);
+
+    onMounted(() => {
+        const customerOffcanvas = new bootstrap.Offcanvas(document.getElementById('customerOffcanvas'));
+    });
+
 
     function doinput( key, event ) {
         emits('update:modelValue', {
@@ -69,8 +81,6 @@
             [key]: event.target.value
         })
     }
-
-
 
 
 

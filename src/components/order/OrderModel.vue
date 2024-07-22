@@ -16,7 +16,7 @@
                 <div class="modal-body, input-group mb-3" >
                     <span class="input-group-text" id="inputGroup-sizing-default">訂單編號</span>
                     <input type="text" disabled :value="modelValue.orderId" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-                    <input @input="doinput('orderId', $event)" type="hidden" :value="modelValue.orderId">
+                    <input @input="doinput('orderId', $event)" :value="modelValue.orderId" type="hidden">
                 </div>
 
                 <div class="modal-body, input-group mb-3">
@@ -30,11 +30,13 @@
                     aria-describedby="inputGroup-sizing-default">
                     <input type="hidden" @input="doinput('customerId', $event)" :value="modelValue.customerId">
                     <CustomerCheck
+                    v-if="modelValue.memberId == ''"
                     ref="customerModal"
                     v-model="customer"
                     :result="result"
                     @customer-insert="insertCustomer"
                     @check-customer-id = "checkCustomerId"
+                    @show-customer-offcanvas="showCustomerOffcanvas"
                     >
                     </CustomerCheck>
 
@@ -43,13 +45,22 @@
                 <div class="modal-body, input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">會員編號</span>
                     <input
-                    :disabled="modelValue.memberId === ''"
-                    @input="doinput('memberId', $event)"
+                    disabled
                     :value="modelValue.memberId"
                     type="text"
                     class="form-control"
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
+                    <input @input="doinput('memberId', $event)" :value="modelValue.memberId" type="hidden">
+                    <MemberCheck
+                    v-if="modelValue.memberId == ''"
+                    ref="memberModal"
+                    v-model="member"
+                    :memberresult="memberResult"
+                    @check-member-phone="checkMemberId"
+                    @show-member-offcanvas="showMemberOffcanvas"
+                    >
+                    </MemberCheck>
                 </div>
 
                 <div class="modal-body, input-group mb-3" v-show="modelValue.status !== '消費中'">
@@ -111,10 +122,9 @@
                     aria-describedby="inputGroup-sizing-default">
                 </div>
 
-                <div class="modal-body, input-group mb-3" >
+                <div class="modal-body, input-group mb-3" v-show="modelValue.status != ''">
                     <span class="input-group-text" id="inputGroup-sizing-default">消費時段</span>
                     <input 
-                    v-shoe="modelValue.status != ''"
                     disabled
                     :value="modelValue.startTime"
                     type="text"
@@ -196,8 +206,7 @@
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
     import CustomerCheck from "../customer/CustomerCheck.vue";
-    
-    
+    import MemberCheck from "../members/MemberCheck.vue";
 
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
@@ -209,8 +218,11 @@
     const customerModal = ref(null)
     const customer = ref({ })
     const result = ref()
-    const customerKey = ref(0);
+    const memberModal = ref(null)
+    const member = ref({ })
+    const memberResult = ref()
     const timeSolt = ref([]);
+    const memberOffcanvas = ref(null)
 
     // =========== 開啟時載入 ===========
     
@@ -223,6 +235,17 @@
     );
 
     // ============== 功能 ==============
+
+    function showCustomerOffcanvas() {
+        const customerOffcanvas = new bootstrap.Offcanvas(document.getElementById('customerOffcanvas'));
+        customerOffcanvas.show();
+    }
+
+    function showMemberOffcanvas() {
+        memberOffcanvas = new bootstrap.Offcanvas(document.getElementById('memberOffcanvas'));
+        memberOffcanvas.show();
+    }
+
 
     function doinput(key, event) {
         emits('update:modelValue', {
@@ -348,6 +371,38 @@
             result.value = "請輸入身分證字號"
         }
     }
+
+    function checkMemberId() {
+        if ( member.value.phone != '' ) {
+            console.log("查詢")
+            console.log("OrderModal.phone = ", member.value)
+            axiosapi(`/ktv-app/api/members/findWithPhone/${member.value.phone}`)
+                .then(function(response) {
+                    if ( response.data != null ) {
+                        if ( response.data.list && response.data.list.length > 0 ) {
+                            console.log("checkCustomerId", response.data)
+                            memberResult.value = response.data.message
+                            member.value = response.data.list[0]
+                            emits("update:modelValue", {
+                                ...props.modelValue,
+                                memberId : response.data.list[0].memberId
+                            })
+                        } else {
+                            result.value = response.data.message
+                            console.log("response.data.else", response.data)
+                            console.log("response.data.else", response.data.message)
+                        }
+                    }
+                })
+                .catch(function( error ) {
+                        console.log(error.message)
+                    })
+        } else {
+            result.value = "請輸入電話號碼"
+        }
+    }
+
+
     
 </script>
     
