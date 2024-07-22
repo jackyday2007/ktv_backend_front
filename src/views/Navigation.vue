@@ -16,7 +16,7 @@
                                 <RouterLink :to="{ name : 'orders-list-router' }" class="nav-link active" aria-current="page" >訂單資訊</RouterLink>
                                 
                             </li>
-
+                            <li><RouterLink class="dropdown-item" to="/router/rooms">包廂管理</RouterLink></li>
                             <li><RouterLink class="dropdown-item" to="/router/problems">問題管理</RouterLink></li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#">Link</a>

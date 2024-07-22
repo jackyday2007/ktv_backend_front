@@ -4,34 +4,38 @@
   <div class="modal-dialog">
       <div class="modal-content">
       <div class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">問題資訊</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <table>
               <tr>
-                <td>eventCase :</td>
-                <td><input type="text" name="eventCase" :value="modelValue.eventCase" @input="doinput('eventCase',$event)"></td>
+                <td>事件問題 :</td>
+                <td><select name="eventCase" :value="modelValue.eventCase" @input="doinput('eventCase',$event)" class="col-lg-12">
+                  <option>包廂環境問題</option>
+                  <option>硬體設備問題</option>
+                  <option>消費問題</option>
+                  <option>其他問題</option>
+                </select></td>
               </tr>
               <tr>
-                <td>roomId :</td>
+                <td>包廂號碼 :</td>
                 <td><input type="text" name="roomId" :value="modelValue.roomId" @input="doinput('roomId',$event)"></td>
               </tr>
               <tr>
-                <td>content :</td>
+                <td>說明內容 :</td>
                 <td><input type="text" name="content" :value="modelValue.content" @input="doinput('content',$event)"></td>
               </tr>
               <tr>
-                <td>eventDate :</td>
-                <td><input type="text" name="eventDate" :value="modelValue.eventDate" @input="doinput('eventDate',$event)"></td>
+                <td>發生日期 :</td>
+                <td><input type="date" name="eventDate" :value="modelValue.eventDate" @input="doinput('eventDate',$event)" class="col-lg-12"></td>
               </tr>
               <tr>
-                <td>closeDate :</td>
-                <td><input type="text" name="closeDate" :value="modelValue.closeDate" @input="doinput('closeDate',$event)"></td>
+                <td>結案日期 :</td>
+                <td><input type="date" name="closeDate" :value="modelValue.closeDate" @input="doinput('closeDate',$event)" class="col-lg-12"></td>
               </tr>
               <tr>
-                <td>status :</td>
-                <!-- <td><input type="text" name="status" :value="modelValue.status" @input="doinput('status',$event)"></td> -->
+                <td>處理狀態 :</td>
                 <td><select name="status" :value="modelValue.status" @input="doinput('status',$event)" class="col-lg-12" >
                   <option>處理中</option>
                   <option>結案</option>
