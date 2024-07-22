@@ -30,7 +30,7 @@
                     aria-describedby="inputGroup-sizing-default">
                     <input type="hidden" @input="doinput('customerId', $event)" :value="modelValue.customerId">
                     <CustomerCheck
-                    v-if="modelValue.memberId == ''"
+                    v-if="modelValue.memberId == '' || modelValue.memberId == null"
                     ref="customerModal"
                     v-model="customer"
                     :result="result"
@@ -53,7 +53,7 @@
                     aria-describedby="inputGroup-sizing-default">
                     <input @input="doinput('memberId', $event)" :value="modelValue.memberId" type="hidden">
                     <MemberCheck
-                    v-if="modelValue.memberId == ''"
+                    v-if="modelValue.memberId == '' || modelValue.memberId == null"
                     ref="memberModal"
                     v-model="member"
                     :memberresult="memberResult"
@@ -187,7 +187,13 @@
                     <button type="button" class="btn btn-outline-success" @click="emits('inTheRoom')" v-show="modelValue.status == '報到' " >進入包廂</button>
                     <button type="button" class="btn btn-outline-danger" @click="emits('onCheckIn')" v-show="modelValue.status == '報到' " >取消預約</button>
                     <button type="button" class="btn btn-outline-primary" @click="emits('inTheRoom')" v-show="modelValue.status == '消費中' " >結帳</button>
-                    <button type="button" class="btn btn-outline-dark" @click="emits('onCheckIn')" v-show="modelValue.status == '消費中' " >點餐</button>
+                    <OrderMenu
+                    v-if="modelValue.status == '消費中'"
+                    ref="menuModal"
+                    v-model="customer"
+                    :result-menu="result"
+                    @show-menu-offcanvas="showMenuOffcanvas"
+                    ></OrderMenu>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
                     
                 </div>
@@ -207,6 +213,7 @@
     import Swal from "sweetalert2";
     import CustomerCheck from "../customer/CustomerCheck.vue";
     import MemberCheck from "../members/MemberCheck.vue";
+    import OrderMenu from "@/components/menu/orderMenu.vue"
 
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
@@ -223,6 +230,8 @@
     const memberResult = ref()
     const timeSolt = ref([]);
     const memberOffcanvas = ref(null)
+    const menuOffcanvas = ref(null)
+    const menuModal = ref(null)
 
     // =========== 開啟時載入 ===========
     
@@ -243,6 +252,11 @@
 
     function showMemberOffcanvas() {
         memberOffcanvas = new bootstrap.Offcanvas(document.getElementById('memberOffcanvas'));
+        memberOffcanvas.show();
+    }
+
+    function showMenuOffcanvas() {
+        menuOffcanvas = new bootstrap.Offcanvas(document.getElementById('menuOffcanvas'));
         memberOffcanvas.show();
     }
 
