@@ -14,8 +14,8 @@
                 <td><input type="text" name="eventCase" :value="modelValue.eventCase" @input="doinput('eventCase',$event)"></td>
               </tr>
               <tr>
-                <td>room :</td>
-                <td><input type="text" name="room" :value="modelValue.room" @input="doinput('room',$event)"></td>
+                <td>roomId :</td>
+                <td><input type="text" name="roomId" :value="modelValue.roomId" @input="doinput('roomId',$event)"></td>
               </tr>
               <tr>
                 <td>content :</td>
@@ -31,7 +31,11 @@
               </tr>
               <tr>
                 <td>status :</td>
-                <td><input type="text" name="status" :value="modelValue.status" @input="doinput('status',$event)"></td>
+                <!-- <td><input type="text" name="status" :value="modelValue.status" @input="doinput('status',$event)"></td> -->
+                <td><select name="status" :value="modelValue.status" @input="doinput('status',$event)" class="col-lg-12" >
+                  <option>處理中</option>
+                  <option>結案</option>
+                </select></td>
               </tr>
             </table>
       </div>
@@ -58,7 +62,7 @@
   }
 
   import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
-  import {ref , onMounted} from 'vue'
+  import {ref , onMounted , defineExpose} from 'vue'
   const exampleRef = ref(null);
   const exampleModal = ref(null);
   

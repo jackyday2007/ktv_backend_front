@@ -9,7 +9,7 @@
             <td>{{ problem.eventDate }}</td>
             <td>{{ problem.closeDate }}</td>
             <td>{{ problem.status }}</td>
-            <td><button type="button" @click="handleUpdate">修改</button></td>
+            <td><button type="button" class="btn btn-outline-dark" @click="handleUpdate" >修改</button></td>
         </tr>
 
 </template>
@@ -20,7 +20,9 @@ const props = defineProps(["problem"]);
 const emits = defineEmits(["problemUpdate"]);
 
 function handleUpdate(){
-    emits('problemUpdate', problem.problemId);
+    console.log("---",props);
+    emits('problemUpdate', props.problem.problemId);
+    
 }
 </script>
 
