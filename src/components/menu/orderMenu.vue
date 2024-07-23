@@ -11,18 +11,31 @@
     tabindex="-1"
     id="menuOffcanvas"
     aria-labelledby="offcanvasRightLabel"
-    style="width: 40%;
+    style="width: 50%;
     background-color: #343a40;">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasRightLabel" style="color: white; font-size: 2.5rem;">菜單</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-
+        <div class="input-group mb-3" style="width: 11.8rem;">
+            <span class="input-group-text" id="inputGroup-sizing-default" style="background-color: #343a40; color:white;">編號</span>
+            <input :value="orderId" type="text" disabled class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            <input :value="orderId" type="hidden" >
+        </div>
         <div class="input-group mb-3">
             <span class="input-group-text" id="inputGroup-sizing-default" style="background-color: #343a40;  color:white">品項</span>
-            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            <select v-model="category" @change="allOrderMenu(0)">
+                <option ></option>
+                <option >啤酒</option>
+                <option >威士忌</option>
+                <option >熱飲</option>
+                <option >冷飲</option>
+                <option >美食</option>
+                <option >組合</option>
+                <option >點心</option>
+            </select>
             <span class="input-group-text" id="inputGroup-sizing-default" style="background-color: #343a40;  color:white">品名</span>
-            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            <input type="text" v-model="itemName" @input="allOrderMenu(0)" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
         </div>
         <table class="table table-dark table-sm" >
             <thead>
@@ -36,18 +49,39 @@
                 </tr>
             </thead>
             <tbody>
-                <Menus
+                <tr
                 v-for=" item in orderMenus "
                 :key="item.itemId"
-                :menu="item"
+                v-show="item.category != '包廂'"
                 >
-                </Menus>
+                    <td><input type="checkbox" class="form-check-input me-1" :value="item.itemId" v-model="checkedItems"></td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.itemName }}</td>
+                    <td>{{ item.capacity }}</td>
+                    <td>$&nbsp;{{ item.price }}</td>
+                    <td style="width: 17%;"><input type="text" style="width: 30%;" v-model="itemInputs[item.itemId]"></td>
+                </tr>
             </tbody>
         </table>
+        <div style="display: flex; justify-content: center;">
+            <Paginate
+                :first-last-button="true"
+                first-button-text="&lt;&lt;"
+                last-button-text="&gt;&gt;"
+                prev-text="&lt;" next-text="&gt;"
+                :page-count="pages"
+                :initial-page="current"
+                v-model="current"
+                :click-handler="allOrderMenu"
+                :container-class="'pagination'"
+                :page-class="'page-item'"
+            >
+            </Paginate>
+        </div>
         <div class="offcanvas-body">
             <div>
                 <p style="color: red;" v-show="resultMenu != null" >{{ resultMenu }}</p>
-                <button type="button" class="btn btn-outline-dark" >送出</button>
+                <button type="button" class="btn btn-outline-dark" style="color: white;">確認點餐</button>
             </div>
         </div>
     </div>
@@ -55,16 +89,31 @@
     
 <script setup>
 
+    import Paginate from 'vuejs-paginate-next';
     import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min.js"
     import { ref, onMounted } from 'vue'
-    import Menus from "./Menus.vue";
     import axiosapi from "@/plugins/axios";
 
 
-    const props = defineProps([ "resultMenu", "modelValue"]);
+    // ============== 變數 ==============
+    const props = defineProps([ "orderId","resultMenu", "modelValue"]);
     const emits = defineEmits(["showMenuOffcanvas", "update:modelValue"]);
-    const orderMenus = ref({})
 
+    // 分頁
+    const total = ref(0);
+    const pages = ref(0);
+    const orderMenus = ref({})
+    const current = ref(0);
+    const rows = ref(10);
+    const start = ref(0);
+    const lastPageRows = ref(0);
+
+    // 搜尋條件
+    const category = ref("");
+    const itemName = ref("");
+    // 在组件的 setup() 中定义复选框状态
+    const checkedItems = ref([]);
+    const itemInputs = ref([])
 
     onMounted(() => {
         const menuOffcanvas = new bootstrap.Offcanvas(document.getElementById('menuOffcanvas'));
@@ -79,20 +128,49 @@
     }
     
 
-    function allOrderMenu() {
+    function allOrderMenu(page) {
+        if (category.value === "") {
+            category.value = null;
+        }
+
+        if (itemName.value === "") {
+            itemName.value = null;
+        }
+
+        //分頁計算
+        if( page ) {
+            start.value = page -1 ;
+            current.value = page;
+            
+        } else {
+            start.value = 0;
+            current.value = 1
+        }
+
         let request= {
-            "start": 0,
-            "max": 10,
+            "start": start.value,
+            "max": rows.value,
             "dir" : false,
-            "order" : "itemId"
+            "order" : "itemId",
+            "category" : category.value,
+            "itemName" : itemName.value
         }
         axiosapi.post("/ktv-app/orderMenu/allMenu", request)
                 .then(function(response) {
-                    console.log("orderMenu = ", response.data)
                     orderMenus.value = response.data.list;
+                    total.value = response.data.count;
+                    pages.value = Math.ceil( total.value / rows.value );
+                    lastPageRows.value = total.value % rows.value;
+                    console.log("orderMenu = ", response.data)
+
                 })
                 .catch()
     }
+
+
+
+
+    
 
 </script>
     

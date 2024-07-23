@@ -191,10 +191,10 @@
                     v-if="modelValue.status == '消費中'"
                     ref="menuModal"
                     v-model="orderMenu"
+                    :order-id="modelValue.orderId"
                     @show-menu-offcanvas="showMenuOffcanvas"
                     ></OrderMenu>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
-                    <button >test</button>
                 </div>
             </div>
             
@@ -297,7 +297,9 @@
 
 
     function roomList() {
-        let request = {}
+        let request = {
+            "max" : 100
+        }
         axiosapi.post("/ktv-app/rooms/findAll", request)
             .then( function( response ) {
                 console.log("room.response = ", response);
