@@ -102,7 +102,7 @@
 
                 <div class="modal-body, input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">消費日期</span>
-                    <input @input="doinput('orderDate', $event)" type="text"
+                    <input @input="doinput('orderDate', $event)" type="date"
                     :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中'"
                     :value="modelValue.orderDate"
                     class="form-control"
