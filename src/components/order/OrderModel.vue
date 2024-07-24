@@ -186,13 +186,15 @@
                     <button type="button" class="btn btn-outline-danger" @click="emits('onCheckIn')" v-show="modelValue.status == '預約' " >取消預約</button>
                     <button type="button" class="btn btn-outline-success" @click="emits('inTheRoom')" v-show="modelValue.status == '報到' " >進入包廂</button>
                     <button type="button" class="btn btn-outline-danger" @click="emits('onCheckIn')" v-show="modelValue.status == '報到' " >取消預約</button>
-                    <button type="button" class="btn btn-outline-primary" @click="emits('inTheRoom')" v-show="modelValue.status == '消費中' " >結帳</button>
+                    <button type="button" class="btn btn-outline-primary" v-show="modelValue.status == '消費中' " >結帳</button>
                     <OrderMenu
                     v-if="modelValue.status == '消費中'"
                     ref="menuModal"
                     v-model="orderMenu"
                     :order-id="modelValue.orderId"
+                    :result-menu="orderMenuResult"
                     @show-menu-offcanvas="showMenuOffcanvas"
+                    @insert-order-details = "insertOrderDetails"
                     ></OrderMenu>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
                 </div>
@@ -231,8 +233,8 @@
     const memberOffcanvas = ref(null)
     const menuOffcanvas = ref(null)
     const menuModal = ref(null)
-    const orderMenu = ref({ })
-
+    const orderMenu = ref([{ }])
+    const orderMenuResult = ref()
     // =========== 開啟時載入 ===========
     
     onMounted(
@@ -293,8 +295,6 @@
             })
 
     }
-
-
 
     function roomList() {
         let request = {
@@ -418,9 +418,18 @@
         }
     }
 
-
-
-
+    function insertOrderDetails(checkedItems) {
+        console.log("checkedItems = ", checkedItems)
+        axiosapi.post("/ktv-app/orderDetail/new", checkedItems)
+                .then(function(response) {
+                    orderMenuResult.value = response.data.message;
+                    // console.log("response", response.data.message)
+                })
+                .catch(function( error ) {
+                    console.log("error.message", error.message)
+                    
+                })
+    }
 
 
 

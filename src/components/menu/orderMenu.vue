@@ -52,13 +52,12 @@
                 <tr
                 v-for=" item in orderMenus "
                 :key="item.itemId"
-                v-show="item.category != '包廂'"
                 >
-                    <td><input type="checkbox" class="form-check-input me-1" :value="item.itemId" v-model="checkedItems"></td>
+                    <td><input type="checkbox" class="form-check-input me-1" :value="item.itemId" @change="updateCheckedItems(item.itemId, $event)" :checked="isChecked(item.itemId)"></td>
                     <td>{{ item.category }}</td>
                     <td>{{ item.itemName }}</td>
                     <td>{{ item.capacity }}</td>
-                    <td>$&nbsp;{{ item.price }}</td>
+                    <td>{{ item.price }}</td>
                     <td style="width: 17%;"><input type="text" style="width: 30%;" v-model="itemInputs[item.itemId]"></td>
                 </tr>
             </tbody>
@@ -80,8 +79,9 @@
         </div>
         <div class="offcanvas-body">
             <div>
+                
+                <button type="button" class="btn btn-outline-dark" style="color: white;" @click="confirmOrder">確認點餐</button>
                 <p style="color: red;" v-show="resultMenu != null" >{{ resultMenu }}</p>
-                <button type="button" class="btn btn-outline-dark" style="color: white;">確認點餐</button>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
 
     // ============== 變數 ==============
     const props = defineProps([ "orderId","resultMenu", "modelValue"]);
-    const emits = defineEmits(["showMenuOffcanvas", "update:modelValue"]);
+    const emits = defineEmits(["insertOrderDetails", "showMenuOffcanvas", "update:modelValue"]);
 
     // 分頁
     const total = ref(0);
@@ -112,8 +112,10 @@
     const category = ref("");
     const itemName = ref("");
     // 在组件的 setup() 中定义复选框状态
-    const checkedItems = ref([]);
-    const itemInputs = ref([])
+    // const checkedItems = ref([]);
+    const checkedItems = ref(new Set());
+    const itemInputs = ref({})
+    const allMenus = ref(new Map());
 
     onMounted(() => {
         const menuOffcanvas = new bootstrap.Offcanvas(document.getElementById('menuOffcanvas'));
@@ -123,10 +125,55 @@
     function doinput( key, event ) {
         emits('update:modelValue', {
             ...props.modelValue,
-            [key]: event.target.value
+            // [key]: event.target.value
+            [key]: event
         })
     }
-    
+
+
+    // function confirmOrder() {
+    //     const selectedItems = orderMenus.value.filter(item => checkedItems.value.includes(item.itemId));
+    //     const orderDetails = selectedItems.map(item => ({
+    //         orderId: props.orderId,
+    //         itemName: item.itemName,
+    //         price: item.price,
+    //         quantity: itemInputs.value[item.itemId] || 0,
+    //     }));
+    //     doinput('checkedItems', checkedItems.value);
+    //     emits('insertOrderDetails', orderDetails);
+    // }
+
+    // new function
+    function confirmOrder() {
+        const selectedItems = [...checkedItems.value].map(itemId => {
+            // const item = orderMenus.value.find(item => item.itemId === itemId) || {};
+            const item = allMenus.value.get(itemId) || {};
+            return {
+                orderId: props.orderId,
+                itemName: item.itemName || '',
+                price: item.price || 0,
+                quantity: itemInputs.value[itemId] || 0
+            };
+        });
+        doinput('checkedItems', [...checkedItems.value]);
+        emits('insertOrderDetails', selectedItems);
+    }
+
+    function updateCheckedItems(itemId, event) {
+        if( event.target.checked ) {
+            checkedItems.value.add(itemId);
+        } else {
+            checkedItems.value.delete(itemId);
+        }
+    }
+
+    function isChecked(itemId) {
+        return checkedItems.value.has(itemId);
+    }
+
+
+
+    // end
 
     function allOrderMenu(page) {
         if (category.value === "") {
@@ -161,6 +208,11 @@
                     total.value = response.data.count;
                     pages.value = Math.ceil( total.value / rows.value );
                     lastPageRows.value = total.value % rows.value;
+
+                    response.data.list.forEach(item => {
+                        allMenus.value.set(item.itemId, item)
+                    });
+
                     console.log("orderMenu = ", response.data)
 
                 })
