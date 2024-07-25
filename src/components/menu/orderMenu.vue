@@ -1,11 +1,11 @@
 <template>
     <button
     @click="showMenuOffcanvas"
-    class="btn btn-outline-secondary"
+    class="btn btn-secondary"
     type="button"
     data-bs-toggle="offcanvas"
     data-bs-target="#menuOffcanvas"
-    aria-controls="offcanvasRight">點餐</button>
+    aria-controls="offcanvasRight">點&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;餐</button>
 
     <div class="offcanvas offcanvas-end"
     tabindex="-1"
@@ -58,7 +58,7 @@
                     <td>{{ item.itemName }}</td>
                     <td>{{ item.capacity }}</td>
                     <td>{{ item.price }}</td>
-                    <td style="width: 17%;"><input type="text" style="width: 30%;" v-model="itemInputs[item.itemId]"></td>
+                    <td style="width: 17%;"><input type="text" :disabled="!isChecked(item.itemId)" style="width: 30%;" v-model="itemInputs[item.itemId]"></td>
                 </tr>
             </tbody>
         </table>

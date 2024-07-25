@@ -13,7 +13,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body, input-group mb-3" >
+                <div class="modal-body, input-group mb-3" v-show="modelValue.status != ''">
                     <span class="input-group-text" id="inputGroup-sizing-default">訂單編號</span>
                     <input type="text" disabled :value="modelValue.orderId" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
                     <input @input="doinput('orderId', $event)" :value="modelValue.orderId" type="hidden">
@@ -30,7 +30,7 @@
                     aria-describedby="inputGroup-sizing-default">
                     <input type="hidden" @input="doinput('customerId', $event)" :value="modelValue.customerId">
                     <CustomerCheck
-                    v-if="modelValue.memberId == '' || modelValue.memberId == null"
+                    v-if="modelValue.customerId == null || modelValue.customerId == ''"
                     ref="customerModal"
                     v-model="customer"
                     :result="result"
@@ -39,7 +39,6 @@
                     @show-customer-offcanvas="showCustomerOffcanvas"
                     >
                     </CustomerCheck>
-
                 </div>
 
                 <div class="modal-body, input-group mb-3">
@@ -63,7 +62,7 @@
                     </MemberCheck>
                 </div>
 
-                <div class="modal-body, input-group mb-3" v-show="modelValue.status !== '消費中'">
+                <div class="modal-body, input-group mb-3" v-show="modelValue.status !== '消費中' && modelValue.status !== ''">
                     <span class="input-group-text" id="inputGroup-sizing-default">&nbsp;&nbsp;包&nbsp;&nbsp;&nbsp;廂&nbsp;&nbsp;</span>
                     <select
                     class="form-select"
@@ -167,6 +166,15 @@
                     class="form-control"
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
+                    <OrderMenu
+                    v-if="modelValue.status == '消費中'"
+                    ref="menuModal"
+                    v-model="orderMenu"
+                    :order-id="modelValue.orderId"
+                    :result-menu="orderMenuResult"
+                    @show-menu-offcanvas="showMenuOffcanvas"
+                    @insert-order-details = "insertOrderDetails"
+                    ></OrderMenu>
                 </div>
 
                 <div class="modal-body, input-group mb-3" v-show="modelValue.status != '' && modelValue.status != '預約' && modelValue.status != '報到' && modelValue.status != '取消預約'">
@@ -178,24 +186,22 @@
                     class="form-control"
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
+                    <ConsumerDetails
+                        ref="consumerDetails"
+                        :order-id="modelValue.orderId"
+                        @consumer-offcanvas="consumerDetailsOffcanvas"
+                    >
+                    </ConsumerDetails>
                 </div>
                 
                 <div class="modal-footer" style="display: flex; justify-content: center;">
-                    <button type="button" class="btn btn-outline-success" @click="emits('orderUpdate')" v-show="modelValue.status == ''">確定預約</button>
+                    <button type="button" class="btn btn-outline-success" @click="emits('orderUpdate')" v-show="modelValue.orderId == '' ">確定預約</button>
                     <button type="button" class="btn btn-outline-success" @click="emits('checkIn')" v-show="modelValue.status == '預約' " >報到</button>
                     <button type="button" class="btn btn-outline-danger" @click="emits('onCheckIn')" v-show="modelValue.status == '預約' " >取消預約</button>
                     <button type="button" class="btn btn-outline-success" @click="emits('inTheRoom')" v-show="modelValue.status == '報到' " >進入包廂</button>
                     <button type="button" class="btn btn-outline-danger" @click="emits('onCheckIn')" v-show="modelValue.status == '報到' " >取消預約</button>
                     <button type="button" class="btn btn-outline-primary" v-show="modelValue.status == '消費中' " >結帳</button>
-                    <OrderMenu
-                    v-if="modelValue.status == '消費中'"
-                    ref="menuModal"
-                    v-model="orderMenu"
-                    :order-id="modelValue.orderId"
-                    :result-menu="orderMenuResult"
-                    @show-menu-offcanvas="showMenuOffcanvas"
-                    @insert-order-details = "insertOrderDetails"
-                    ></OrderMenu>
+
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
                 </div>
             </div>
@@ -215,6 +221,7 @@
     import CustomerCheck from "@/components/customer/CustomerCheck.vue";
     import MemberCheck from "@/components/members/MemberCheck.vue"
     import OrderMenu from "@/components/menu/OrderMenu.vue"
+    import ConsumerDetails from "@/components/menu/ConsumerDetails.vue";
 
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
@@ -232,6 +239,7 @@
     const timeSolt = ref([]);
     const memberOffcanvas = ref(null)
     const menuOffcanvas = ref(null)
+    const consumerOffcanvas = ref(null)
     const menuModal = ref(null)
     const orderMenu = ref([{ }])
     const orderMenuResult = ref()
@@ -259,7 +267,12 @@
 
     function showMenuOffcanvas() {
         menuOffcanvas = new bootstrap.Offcanvas(document.getElementById('menuOffcanvas'));
-        memberOffcanvas.show();
+        menuOffcanvas.show();
+    }
+
+    function consumerDetailsOffcanvas() {
+        consumerOffcanvas = new bootstrap.Offcanvas(document.getElementById('consumerDetailsOffcanvas'));
+        consumerOffcanvas.show();
     }
 
 
@@ -358,7 +371,12 @@
     }
 
     function checkCustomerId() {
-        if ( customer.value.idNumber != '' ) {
+
+        if (customer.value.idNumber == '') {
+            customer.value.idNumber = null;
+        }
+
+        if ( customer.value.idNumber != null ) {
             console.log("查詢")
             console.log("OrderModal.idNumber = ", customer.value.idNumber)
             axiosapi(`/ktv-app/customer/${customer.value.idNumber}`)
@@ -431,6 +449,8 @@
                     
                 })
     }
+
+
 
     
 </script>

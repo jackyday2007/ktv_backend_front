@@ -38,7 +38,7 @@
             </div>
             <div class="modal-body, input-group mb-3" v-show="modelValue.customerId == ''">
                     <span class="input-group-text" id="inputGroup-sizing-default">生&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;日</span>
-                    <input type="text"
+                    <input type="date"
                     :value="modelValue.birth"
                     @input="doinput('birth', $event)"
                     class="form-control"

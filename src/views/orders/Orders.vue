@@ -29,7 +29,7 @@
             @change="orderList">
         >
         </OrdersRows>
-        <button class="btn btn-outline-secondary, btn btn-dark" type="button" id="button-addon1" @click="newOrder">新增訂位</button>
+        <button class="btn btn-outline-secondary, btn btn-dark" type="button" id="button-addon1" @click="openModal('insert')">新增訂位</button>
     </div>
     
     <table class="table table-striped table-hover">
@@ -80,7 +80,7 @@
     <OrderModel
         ref="orderModal"
         v-model="order"
-        @order-update="modifyOrder"
+        @order-update="newOrder"
         @check-in="checkIn"
         @on-check-in="onCheckIn"
         @in-the-room="inTheRoom"
@@ -138,6 +138,9 @@
         console.log("openModal.id = ", id)
         if(action==='insert') {
             order.value = { };
+            order.value.orderId = '';
+            order.value.status = '';
+            order.value.room = '';
             orderModal.value.showModal();
         } else {
             callFindByOrderId(id);
@@ -147,14 +150,9 @@
 
     // 尋找訂單編號
     function callFindByOrderId( id ) {
-        console.log("callFindByOrderId = ", id);
         axiosapi.get(`/ktv-app/ktvbackend/orders/${id}`)
         .then(function(response) {
-            console.log("callFindByOrderId.response = ", response);
-            console.log("callFindByOrderId.response.list = ", response.data.list);
             order.value = response.data.list[0];
-            console.log("response.data.list[0].room = ", response.data.list[0].room)
-            console.log("order.value.room = ", order.value.room)
         })
         .catch(function(error) {
             Swal.fire({
@@ -166,10 +164,48 @@
 
     // ============ 新增訂單 =================
     function newOrder() {
-        axiosapi.post("/ktv-app/ktvbackend/orders/createOrderId")
+
+        if ( order.value.customerId == '' ) {
+            order.value.customerId = null;
+        }
+
+        if ( order.value.memberId == '' ) {
+            order.value.memberId = null;
+        }
+
+        if ( order.value.numberOfPersons == '' ) {
+            order.value.numberOfPersons = null;
+        }
+
+        if ( order.value.hours == '' ) {
+            order.value.hours = null;
+        }
+
+        if ( order.value.orderDate == '' ) {
+            order.value.orderDate = null;
+        }
+
+        if ( order.value.startTime == '' ) {
+            order.value.startTime = null;
+        }
+
+        axiosapi.post("/ktv-app/ktvbackend/orders/testNewOrder", order.value)
         .then(function( response ) {
             console.log("response", response)
-            openModal("createOrder",response.data.orderId)
+            if ( response.data.success ) {
+                Swal.fire({
+                    icon: "success",
+                    text: response.data.message
+                }).then(function(result) {
+                    orderModal.value.hideModal();
+                    orderList(current.value)
+                })
+            } else {
+                Swal.fire({
+                    icon: "warning",
+                    text: response.data.message,
+                })
+            }
         })
         .catch(
             function( error) {
@@ -320,6 +356,7 @@
                     console.log("order.value.result", order.value)
                     orderModal.value.hideModal();
                     orderList(current.value)
+                    window.location.reload;
                 })
             } else {
                 console.log("order.value.else", order.value)
