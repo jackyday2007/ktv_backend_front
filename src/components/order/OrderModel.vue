@@ -213,8 +213,8 @@
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
     import CustomerCheck from "@/components/customer/CustomerCheck.vue";
-    import MemberCheck from "@/components/members/memberCheck.vue";
-    import OrderMenu from "@/components/menu/orderMenu.vue"
+    import MemberCheck from "@/components/members/MemberCheck.vue"
+    import OrderMenu from "@/components/menu/OrderMenu.vue"
 
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
@@ -423,19 +423,14 @@
         axiosapi.post("/ktv-app/orderDetail/new", checkedItems)
                 .then(function(response) {
                     orderMenuResult.value = response.data.message;
-                    // console.log("response", response.data.message)
+                    console.log("response", response.data.message)
+                    window.location.reload();
                 })
                 .catch(function( error ) {
                     console.log("error.message", error.message)
                     
                 })
     }
-
-
-
-
-
-
 
     
 </script>

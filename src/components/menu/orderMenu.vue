@@ -120,6 +120,7 @@
     onMounted(() => {
         const menuOffcanvas = new bootstrap.Offcanvas(document.getElementById('menuOffcanvas'));
         allOrderMenu();
+        // resetOrderMenu();
     });
 
     function doinput( key, event ) {
@@ -129,19 +130,6 @@
             [key]: event
         })
     }
-
-
-    // function confirmOrder() {
-    //     const selectedItems = orderMenus.value.filter(item => checkedItems.value.includes(item.itemId));
-    //     const orderDetails = selectedItems.map(item => ({
-    //         orderId: props.orderId,
-    //         itemName: item.itemName,
-    //         price: item.price,
-    //         quantity: itemInputs.value[item.itemId] || 0,
-    //     }));
-    //     doinput('checkedItems', checkedItems.value);
-    //     emits('insertOrderDetails', orderDetails);
-    // }
 
     // new function
     function confirmOrder() {
@@ -157,6 +145,10 @@
         });
         doinput('checkedItems', [...checkedItems.value]);
         emits('insertOrderDetails', selectedItems);
+
+        // 清空 checkedItems 和 itemInputs
+        checkedItems.value.clear();
+        itemInputs.value = {};
     }
 
     function updateCheckedItems(itemId, event) {
@@ -208,19 +200,15 @@
                     total.value = response.data.count;
                     pages.value = Math.ceil( total.value / rows.value );
                     lastPageRows.value = total.value % rows.value;
-
+                    
                     response.data.list.forEach(item => {
                         allMenus.value.set(item.itemId, item)
                     });
-
                     console.log("orderMenu = ", response.data)
 
                 })
                 .catch()
     }
-
-
-
 
     
 
