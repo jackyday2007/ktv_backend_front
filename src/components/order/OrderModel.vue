@@ -219,8 +219,8 @@
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
     import CustomerCheck from "@/components/customer/CustomerCheck.vue";
-    import MemberCheck from "@/components/members/MemberCheck.vue"
-    import OrderMenu from "@/components/menu/OrderMenu.vue"
+    import MemberCheck from "../members/memberCheck.vue";
+    import OrderMenu from "../menu/orderMenu.vue";
     import ConsumerDetails from "@/components/menu/ConsumerDetails.vue";
 
     // ============== 變數 ==============
