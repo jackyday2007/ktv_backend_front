@@ -134,7 +134,6 @@
     // new function
     function confirmOrder() {
         const selectedItems = [...checkedItems.value].map(itemId => {
-            // const item = orderMenus.value.find(item => item.itemId === itemId) || {};
             const item = allMenus.value.get(itemId) || {};
             return {
                 orderId: props.orderId,
@@ -145,7 +144,6 @@
         });
         doinput('checkedItems', [...checkedItems.value]);
         emits('insertOrderDetails', selectedItems);
-
         // 清空 checkedItems 和 itemInputs
         checkedItems.value.clear();
         itemInputs.value = {};

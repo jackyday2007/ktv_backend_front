@@ -4,7 +4,7 @@
     class="btn btn-outline-primary"
     type="button"
     data-bs-toggle="offcanvas"
-    data-bs-target="#checkoutOffcanvas"
+    data-bs-target="#checkoutMsgOffcanvas"
     aria-controls="offcanvasRight">結帳</button>
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="checkoutOffcanvas" aria-labelledby="offcanvasRightLabel" style="width: 45%; background-color: #343a40;">
@@ -40,7 +40,7 @@
                     </tr>
                     <tr>
                         <td></td>
-                        <td>收取金額:&nbsp;<input type="text" v-model.number="receivedAmount" placeholder="請輸入金額" style="background-color: #212529; color: white;" @input="doinput('pay', $event)"></td>
+                        <td>收取金額:&nbsp;<input type="text" disabled :value="checkout.value.pay" style="background-color: #212529; color: white;" @input="doinput('pay', $event)"></td>
                         <td>-</td>
                         <td>總計:</td>
                         <td>{{ total }}</td>
@@ -50,7 +50,7 @@
                         <td></td>
                         <td></td>
                         <td>找零:</td>
-                        <td><input type="text" disabled style="width: 45px;" :value="change"></td>
+                        <td><input type="text" disabled style="width: 45px;" :value="checkout.value.change"></td>
                     </tr>
                 </tbody>
             </table>
@@ -71,17 +71,7 @@
     const emits = defineEmits(["checkoutPost", "checkoutOffcanvas", "update:modelValue"]);
     const list = ref({})
     const total = ref({})
-    const receivedAmount = ref(0);
-
-
-    const change = computed(() => {
-        if ( receivedAmount.value - total.value < 0 ) {
-            return 0;
-        } else {
-            return receivedAmount.value - total.value;
-        }
-        
-    });
+    const checkout = ref({})
 
     onMounted(() => {
         const checkoutOffcanvas = new bootstrap.Offcanvas(document.getElementById('checkoutOffcanvas'));
@@ -105,9 +95,16 @@
                 })
                 .catch()
     }
-
-
     
+    function checkoutList() {
+        axiosapi.get(`/ktv-app/checkout/${props.orderId}`)
+                .then(function(response) {
+                    checkout.value = response.data.list;
+                    console.log("checkoutList.response = ", response.data);
+                })
+                .catch()
+    }
+
     function handleClick() {
         emits('update:modelValue', {
             orderId: props.orderId,
@@ -115,6 +112,7 @@
         });
         checkoutOffcanvas;
         detailList();
+        checkoutList()
     }
 
 

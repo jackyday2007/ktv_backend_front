@@ -14,7 +14,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-
             <table class="table table-dark table-sm">
                 <thead>
                     <tr>
@@ -68,9 +67,9 @@
 
 
 
+
     onMounted(() => {
         const consumerOffcanvas = new bootstrap.Offcanvas(document.getElementById('consumerOffcanvas'));
-        // detailList();
     });
 
 
@@ -84,10 +83,8 @@
     }
     
     function handleClick() {
-
         consumerOffcanvas;
         detailList();
-
     }
 
 </script>
