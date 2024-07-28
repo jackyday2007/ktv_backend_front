@@ -62,7 +62,7 @@
                     </MemberCheck>
                 </div>
 
-                <div class="modal-body, input-group mb-3" v-show="modelValue.status !== '消費中' && modelValue.status !== '' && modelValue.status !== '取消預約'">
+                <div class="modal-body, input-group mb-3" v-show="modelValue.status !== '消費中' && modelValue.status !== '' && modelValue.status !== '取消預約' && modelValue.status !== '已結帳'">
                     <span class="input-group-text" id="inputGroup-sizing-default">包&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;廂</span>
                     <select
                     class="form-select"
@@ -92,7 +92,7 @@
                     <input
                     @input="doinput('numberOfPersons', $event)"
                     :value="modelValue.numberOfPersons"
-                    :disabled="modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中'"
+                    :disabled="modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中' || modelValue.status === '已結帳'"
                     type="text"
                     class="form-control"
                     aria-label="Sizing example input"
@@ -102,7 +102,7 @@
                 <div class="modal-body, input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">消費日期</span>
                     <input @input="doinput('orderDate', $event)" type="date"
-                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中'"
+                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中' || modelValue.status === '已結帳'"
                     :value="modelValue.orderDate"
                     class="form-control"
                     aria-label="Sizing example input"
@@ -111,14 +111,22 @@
 
                 <div class="modal-body, input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">歡唱時數</span>
-                    <input 
+                    <select
                     @input="doinput('hours', $event)" 
-                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中'"
+                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中' || modelValue.status === '已結帳'"
                     :value="modelValue.hours"
-                    type="text"
                     class="form-control"
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
+                    >
+                        <option></option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
                 </div>
 
                 <div class="modal-body, input-group mb-3" v-show="modelValue.status != ''">
@@ -192,6 +200,13 @@
                         @consumer-offcanvas="consumerDetailsOffcanvas"
                     >
                     </ConsumerDetails>
+                    <CheckoutMsg
+                        v-if="modelValue.status == '已結帳'"
+                        :order-id="modelValue.orderId"
+                        :room="modelValue.room"
+                        @checkout-msg-offcanvas="showCheckoutMsgOffcanvas"
+                    >
+                    </CheckoutMsg>
                 </div>
                 
                 <div class="modal-footer" style="display: flex; justify-content: center;">
@@ -208,9 +223,6 @@
                     @checkout-post="checkout"
                     :room="modelValue.room"
                     ></Checkout>
-                    <CheckoutMsg
-                    
-                    ></CheckoutMsg>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
                 </div>
             </div>
@@ -229,11 +241,11 @@
     import Swal from "sweetalert2";
     import CustomerCheck from "@/components/customer/CustomerCheck.vue";
     import MemberCheck from "@/components/members/MemberCheck.vue"
-    import OrderMenu from "@/components/menu/OrderMenu.vue"
+    import OrderMenu from "@/components/menu/orderMenu.vue"
     import ConsumerDetails from "@/components/menu/ConsumerDetails.vue";
     import Checkout from "@/components/checkout/Checkout.vue";
     import CheckoutMsg from "@/components/checkout/CheckoutMsg.vue";
-
+    
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
     const emits = defineEmits(["orderUpdate", "checkIn", "onCheckIn", "inTheRoom", "update:modelValue"])
@@ -252,6 +264,7 @@
     const menuOffcanvas = ref(null)
     const consumerOffcanvas = ref(null)
     const checkoutOffcanvas = ref(null)
+    const checkoutMsgOffcanvas = ref(null)
     const menuModal = ref(null)
     const orderMenu = ref([{ }])
     const orderMenuResult = ref()
@@ -291,6 +304,11 @@
     function showCheckoutOffcanvas() {
         checkoutOffcanvas = new bootstrap.Offcanvas(document.getElementById('checkoutOffcanvas'));
         checkoutOffcanvas.show();
+    }
+
+    function showCheckoutMsgOffcanvas() {
+        checkoutMsgOffcanvas = new bootstrap.Offcanvas(document.getElementById('checkoutMsgOffcanvas'));
+        checkoutMsgOffcanvas.show();
     }
 
 

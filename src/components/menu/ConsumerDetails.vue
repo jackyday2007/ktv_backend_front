@@ -7,6 +7,7 @@
     data-bs-target="#consumerOffcanvas"
     aria-controls="offcanvasRight"
     >消費明細</button>
+    
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="consumerOffcanvas" aria-labelledby="offcanvasRightLabel" style="width: 50%; background-color: #343a40;">
         <div class="offcanvas-header">

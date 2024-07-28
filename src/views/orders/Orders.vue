@@ -12,7 +12,7 @@
         <span class="input-group-text" id="inputGroup-sizing-default">消費狀態</span>
         <select v-model="status" @change="orderList(0)" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             <option></option>
-            <option>已預約</option>
+            <option>預約</option>
             <option>已報到</option>
             <option>消費中</option>
             <option>已結帳</option>

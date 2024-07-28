@@ -40,8 +40,8 @@
                     </tr>
                     <tr>
                         <td></td>
-                        <td>收取金額:&nbsp;<input type="text" v-model.number="receivedAmount" placeholder="請輸入金額" style="background-color: #212529; color: white;" @input="doinput('pay', $event)"></td>
-                        <td>-</td>
+                        <td style="text-align: right;">收取金額:&nbsp;<input type="text" v-model.number="receivedAmount" placeholder="請輸入金額" style="background-color: #212529; color: white;" @input="doinput('pay', $event)"></td>
+                        <td style="font-size: 20px; font-weight: bold;">－</td>
                         <td>總計:</td>
                         <td>{{ total }}</td>
                     </tr>
@@ -50,7 +50,7 @@
                         <td></td>
                         <td></td>
                         <td>找零:</td>
-                        <td><input type="text" disabled style="width: 45px;" :value="change"></td>
+                        <td><input type="text" disabled style="width: 45px; background-color: #212529; color: white;" :value="change"></td>
                     </tr>
                 </tbody>
             </table>
@@ -106,8 +106,6 @@
                 .catch()
     }
 
-
-    
     function handleClick() {
         emits('update:modelValue', {
             orderId: props.orderId,

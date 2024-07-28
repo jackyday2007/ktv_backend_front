@@ -1,13 +1,13 @@
 <template>
     <button
     @click="handleClick"
-    class="btn btn-outline-primary"
+    class="btn btn-secondary"
     type="button"
     data-bs-toggle="offcanvas"
     data-bs-target="#checkoutMsgOffcanvas"
-    aria-controls="offcanvasRight">結帳</button>
+    aria-controls="offcanvasRight">結帳明細</button>
 
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="checkoutOffcanvas" aria-labelledby="offcanvasRightLabel" style="width: 45%; background-color: #343a40;">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="checkoutMsgOffcanvas" aria-labelledby="offcanvasRightLabel" style="width: 45%; background-color: #343a40;">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasRightLabel" style="color: white; font-size: 2.5rem;">結帳資訊</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -31,7 +31,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="item in list">
+                    <tr v-for="item in lists">
                         <td>{{ item.orderDetailId }}</td>
                         <td>{{ item.item }}</td>
                         <td>{{ item.price }}</td>
@@ -40,8 +40,8 @@
                     </tr>
                     <tr>
                         <td></td>
-                        <td>收取金額:&nbsp;<input type="text" disabled :value="checkout.value.pay" style="background-color: #212529; color: white;" @input="doinput('pay', $event)"></td>
-                        <td>-</td>
+                        <td style="text-align: right;">收取金額:&nbsp;<input type="text" disabled style="width: 90px; background-color: #212529; color: white;" :value="checkouts.pay"></td>
+                        <td>－</td>
                         <td>總計:</td>
                         <td>{{ total }}</td>
                     </tr>
@@ -50,11 +50,11 @@
                         <td></td>
                         <td></td>
                         <td>找零:</td>
-                        <td><input type="text" disabled style="width: 45px;" :value="checkout.value.change"></td>
+                        <td><input type="text" disabled style="width: 45px; background-color: #212529; color: white;" :value="checkouts.change"></td>
                     </tr>
                 </tbody>
             </table>
-                <button type="button" class="btn btn-outline-secondary" style="color: white;" @click="emits('checkoutPost')" >確定結帳</button>
+                <!-- <button type="button" class="btn btn-outline-secondary" style="color: white;" @click="emits('checkoutPost')" >確定結帳</button> -->
             </div>
         </div>
     </div>
@@ -63,18 +63,18 @@
 <script setup>
     import axiosapi from "@/plugins/axios";
     import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min.js"
-    import { ref, onMounted,computed  } from 'vue'
+    import { ref, onMounted } from 'vue'
 
 
     
     const props = defineProps(["room", "orderId", "result", "modelValue"]);
-    const emits = defineEmits(["checkoutPost", "checkoutOffcanvas", "update:modelValue"]);
-    const list = ref({})
+    const emits = defineEmits(["checkoutMsgOffcanvas", "update:modelValue"]);
+    const lists = ref({})
     const total = ref({})
-    const checkout = ref({})
+    const checkouts = ref({ })
 
     onMounted(() => {
-        const checkoutOffcanvas = new bootstrap.Offcanvas(document.getElementById('checkoutOffcanvas'));
+        const checkoutMsgOffcanvas = new bootstrap.Offcanvas(document.getElementById('checkoutMsgOffcanvas'));
     });
 
 
@@ -88,19 +88,18 @@
     function detailList() {
         axiosapi.get(`/ktv-app/orderDetail/${props.orderId}`)
                 .then(function(response) {
-                    list.value = response.data.list;
+                    lists.value = response.data.list;
                     total.value = response.data.total
-                    receivedAmount.value = ""
                     console.log("detailList.response = ", response.data);
                 })
                 .catch()
     }
-    
+
     function checkoutList() {
         axiosapi.get(`/ktv-app/checkout/${props.orderId}`)
                 .then(function(response) {
-                    checkout.value = response.data.list;
-                    console.log("checkoutList.response = ", response.data);
+                    checkouts.value = response.data.list[0];
+                    console.log("checkoutList.response = ", response.data.list[0]);
                 })
                 .catch()
     }
@@ -110,9 +109,9 @@
             orderId: props.orderId,
             room: props.room
         });
-        checkoutOffcanvas;
+        checkoutMsgOffcanvas;
         detailList();
-        checkoutList()
+        checkoutList();
     }
 
 
