@@ -79,7 +79,7 @@
   }
 
   import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
-  import { ref, onMounted, defineExpose } from 'vue'
+  import { ref, onMounted } from 'vue'
   const exampleRef = ref(null);
   const exampleModal = ref(null);
 
