@@ -30,7 +30,7 @@
                     aria-describedby="inputGroup-sizing-default">
                     <input type="hidden" @input="doinput('customerId', $event)" :value="modelValue.customerId">
                     <CustomerCheck
-                    v-if=" modelValue.customerId == null || modelValue.customerId == '' && !modelValue.memberId"
+                    v-if=" modelValue.status != '取消預約' && !modelValue.memberId && !modelValue.customerId"
                     ref="customerModal"
                     v-model="customer"
                     :result="result"
@@ -52,7 +52,7 @@
                     aria-describedby="inputGroup-sizing-default">
                     <input @input="doinput('memberId', $event)" :value="modelValue.memberId" type="hidden">
                     <MemberCheck
-                    v-if= "modelValue.status != '取消預約' && !modelValue.memberId || modelValue.memberId == '' && modelValue.memberId == null"
+                    v-if= "modelValue.status != '取消預約' && modelValue.status != '已結帳' && !modelValue.memberId || modelValue.memberId == '' && modelValue.memberId == null"
                     ref="memberModal"
                     v-model="member"
                     :memberresult="memberResult"
@@ -240,8 +240,8 @@
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
     import CustomerCheck from "@/components/customer/CustomerCheck.vue";
-    import MemberCheck from "@/components/members/MemberCheck.vue"
-    import OrderMenu from "@/components/menu/OrderMenu.vue"
+    import MemberCheck from "@/components/members/memberCheck.vue";
+    import OrderMenu from "@/components/menu/orderMenu.vue"
     import ConsumerDetails from "@/components/menu/ConsumerDetails.vue";
     import Checkout from "@/components/checkout/Checkout.vue";
     import CheckoutMsg from "@/components/checkout/CheckoutMsg.vue";

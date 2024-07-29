@@ -9,25 +9,34 @@
             
             
             <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+                
                 <div class="offcanvas-header">
-                    <img src="../assets/GOLD-PANDA.png" style="width: 100px; height: 40px;">
+                    <a href="/"><img src="../assets/GOLD-PANDA.png" style="width: 100px; height: 40px;"></a>
                     <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">KTV櫃台系統</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                     <div class="offcanvas-body">
                         <ul class="navbar-nav">
                             <li class="nav-item">
+                                <RouterLink :to="{ name : 'secure-link-router' }" class="nav-link active" aria-current="page" >登入</RouterLink>
+                            </li>
+                            <li class="nav-item">
                                 <RouterLink :to="{ name : 'orders-list-router' }" class="nav-link active" aria-current="page" >訂單資訊</RouterLink>
-                                
                             </li>
                             <li><RouterLink class="dropdown-item" to="/router/rooms">包廂管理</RouterLink></li>
                             <li><RouterLink class="dropdown-item" to="/router/problems">問題管理</RouterLink></li>
-                           
                         </ul>
                     </div>
             </div>
+            <div>
+                <font-awesome-icon icon="fa-solid fa-right-to-bracket" size="2xl" style="color: #ffffff;" />
+                &nbsp;
+                <font-awesome-icon icon="fa-solid fa-right-from-bracket" size="2xl" style="color: #ffffff;" />
+                
+            </div>
             
         </div>
+        
     </nav>
     
 
