@@ -16,12 +16,13 @@
                 </div>
                     <div class="offcanvas-body">
                         <ul class="navbar-nav">
+                            <li><RouterLink class="nav-link active" to="/">首頁</RouterLink></li>
                             <li class="nav-item">
                                 <RouterLink :to="{ name : 'orders-list-router' }" class="nav-link active" aria-current="page" >訂單資訊</RouterLink>
                                 
                             </li>
-                            <li><RouterLink class="dropdown-item" to="/router/rooms">包廂管理</RouterLink></li>
-                            <li><RouterLink class="dropdown-item" to="/router/problems">問題管理</RouterLink></li>
+                            <li><RouterLink class="nav-link active" to="/router/rooms">包廂管理</RouterLink></li>
+                            <li><RouterLink class="nav-link active" to="/router/problems">問題管理</RouterLink></li>
                            
                         </ul>
                     </div>
