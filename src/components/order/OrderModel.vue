@@ -30,7 +30,7 @@
                     aria-describedby="inputGroup-sizing-default">
                     <input type="hidden" @input="doinput('customerId', $event)" :value="modelValue.customerId">
                     <CustomerCheck
-                    v-if="modelValue.customerId == null || modelValue.customerId == ''"
+                    v-if=" modelValue.customerId == null || modelValue.customerId == '' && !modelValue.memberId"
                     ref="customerModal"
                     v-model="customer"
                     :result="result"
@@ -52,7 +52,7 @@
                     aria-describedby="inputGroup-sizing-default">
                     <input @input="doinput('memberId', $event)" :value="modelValue.memberId" type="hidden">
                     <MemberCheck
-                    v-if="modelValue.memberId == '' || modelValue.memberId == null"
+                    v-if= "modelValue.status != '取消預約' && !modelValue.memberId || modelValue.memberId == '' && modelValue.memberId == null"
                     ref="memberModal"
                     v-model="member"
                     :memberresult="memberResult"
@@ -62,8 +62,8 @@
                     </MemberCheck>
                 </div>
 
-                <div class="modal-body, input-group mb-3" v-show="modelValue.status !== '消費中' && modelValue.status !== ''">
-                    <span class="input-group-text" id="inputGroup-sizing-default">&nbsp;&nbsp;包&nbsp;&nbsp;&nbsp;廂&nbsp;&nbsp;</span>
+                <div class="modal-body, input-group mb-3" v-show="modelValue.status !== '消費中' && modelValue.status !== '' && modelValue.status !== '取消預約' && modelValue.status !== '已結帳'">
+                    <span class="input-group-text" id="inputGroup-sizing-default">包&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;廂</span>
                     <select
                     class="form-select"
                     id="inputGroupSelect01"
@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="modal-body, input-group mb-3" v-show="modelValue.room !=='' && modelValue.status !=='預約' && modelValue.status !=='報到'">
-                    <span class="input-group-text" id="inputGroup-sizing-default">&nbsp;&nbsp;包&nbsp;&nbsp;&nbsp;廂&nbsp;&nbsp;</span>
+                    <span class="input-group-text" id="inputGroup-sizing-default">包&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;廂</span>
                     <input @input="doinput('room', $event)" type="text"
                     disabled
                     :value="modelValue.room"
@@ -92,7 +92,7 @@
                     <input
                     @input="doinput('numberOfPersons', $event)"
                     :value="modelValue.numberOfPersons"
-                    :disabled="modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中'"
+                    :disabled="modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中' || modelValue.status === '已結帳'"
                     type="text"
                     class="form-control"
                     aria-label="Sizing example input"
@@ -102,7 +102,7 @@
                 <div class="modal-body, input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">消費日期</span>
                     <input @input="doinput('orderDate', $event)" type="date"
-                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中'"
+                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中' || modelValue.status === '已結帳'"
                     :value="modelValue.orderDate"
                     class="form-control"
                     aria-label="Sizing example input"
@@ -111,14 +111,22 @@
 
                 <div class="modal-body, input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">歡唱時數</span>
-                    <input 
+                    <select
                     @input="doinput('hours', $event)" 
-                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中'"
+                    :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中' || modelValue.status === '已結帳'"
                     :value="modelValue.hours"
-                    type="text"
                     class="form-control"
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
+                    >
+                        <option></option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                    </select>
                 </div>
 
                 <div class="modal-body, input-group mb-3" v-show="modelValue.status != ''">
@@ -187,11 +195,18 @@
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
                     <ConsumerDetails
-                        ref="consumerDetails"
+                        v-if="modelValue.status == '消費中'"
                         :order-id="modelValue.orderId"
                         @consumer-offcanvas="consumerDetailsOffcanvas"
                     >
                     </ConsumerDetails>
+                    <CheckoutMsg
+                        v-if="modelValue.status == '已結帳'"
+                        :order-id="modelValue.orderId"
+                        :room="modelValue.room"
+                        @checkout-msg-offcanvas="showCheckoutMsgOffcanvas"
+                    >
+                    </CheckoutMsg>
                 </div>
                 
                 <div class="modal-footer" style="display: flex; justify-content: center;">
@@ -200,8 +215,14 @@
                     <button type="button" class="btn btn-outline-danger" @click="emits('onCheckIn')" v-show="modelValue.status == '預約' " >取消預約</button>
                     <button type="button" class="btn btn-outline-success" @click="emits('inTheRoom')" v-show="modelValue.status == '報到' " >進入包廂</button>
                     <button type="button" class="btn btn-outline-danger" @click="emits('onCheckIn')" v-show="modelValue.status == '報到' " >取消預約</button>
-                    <button type="button" class="btn btn-outline-primary" v-show="modelValue.status == '消費中' " >結帳</button>
-
+                    <Checkout
+                    v-model="checkouts"
+                    v-if="modelValue.status == '消費中'"
+                    @checkout-offcanvas="showCheckoutOffcanvas"
+                    :order-id="modelValue.orderId"
+                    @checkout-post="checkout"
+                    :room="modelValue.room"
+                    ></Checkout>
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">關閉</button>
                 </div>
             </div>
@@ -219,10 +240,12 @@
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
     import CustomerCheck from "@/components/customer/CustomerCheck.vue";
-    import MemberCheck from "../members/memberCheck.vue";
-    import OrderMenu from "../menu/orderMenu.vue";
+    import MemberCheck from "@/components/members/MemberCheck.vue"
+    import OrderMenu from "@/components/menu/OrderMenu.vue"
     import ConsumerDetails from "@/components/menu/ConsumerDetails.vue";
-
+    import Checkout from "@/components/checkout/Checkout.vue";
+    import CheckoutMsg from "@/components/checkout/CheckoutMsg.vue";
+    
     // ============== 變數 ==============
     const props = defineProps(["modelValue"]);
     const emits = defineEmits(["orderUpdate", "checkIn", "onCheckIn", "inTheRoom", "update:modelValue"])
@@ -240,9 +263,12 @@
     const memberOffcanvas = ref(null)
     const menuOffcanvas = ref(null)
     const consumerOffcanvas = ref(null)
+    const checkoutOffcanvas = ref(null)
+    const checkoutMsgOffcanvas = ref(null)
     const menuModal = ref(null)
     const orderMenu = ref([{ }])
     const orderMenuResult = ref()
+    const checkouts = ref({ })
     // =========== 開啟時載入 ===========
     
     onMounted(
@@ -275,6 +301,16 @@
         consumerOffcanvas.show();
     }
 
+    function showCheckoutOffcanvas() {
+        checkoutOffcanvas = new bootstrap.Offcanvas(document.getElementById('checkoutOffcanvas'));
+        checkoutOffcanvas.show();
+    }
+
+    function showCheckoutMsgOffcanvas() {
+        checkoutMsgOffcanvas = new bootstrap.Offcanvas(document.getElementById('checkoutMsgOffcanvas'));
+        checkoutMsgOffcanvas.show();
+    }
+
 
     function doinput(key, event) {
         emits('update:modelValue', {
@@ -282,6 +318,8 @@
             [key]: event.target.value
         });
     }
+
+
 
 
     function showModal() {
@@ -371,11 +409,9 @@
     }
 
     function checkCustomerId() {
-
         if (customer.value.idNumber == '') {
             customer.value.idNumber = null;
         }
-
         if ( customer.value.idNumber != null ) {
             console.log("查詢")
             console.log("OrderModal.idNumber = ", customer.value.idNumber)
@@ -390,11 +426,10 @@
                                 ...props.modelValue,
                                 customerId : response.data.list[0].customerId
                             })
+                            customer.value = ''
+                            result.value = ''
                         } else {
                             result.value = response.data.message
-                            // customer.value = '';
-                            console.log("response.data.else", response.data)
-                            console.log("response.data.else", response.data.message)
                         }
                     }
                 })
@@ -421,6 +456,8 @@
                                 ...props.modelValue,
                                 memberId : response.data.list[0].memberId
                             })
+                            memberResult.value = ''
+                            member.value = ''
                         } else {
                             result.value = response.data.message
                             console.log("response.data.else", response.data)
@@ -450,7 +487,27 @@
                 })
     }
 
-
+    function checkout() {
+        if ( checkouts.value.pay == '' ) {
+            checkouts.value.pay = null
+        }
+        console.log("checkouts", checkouts.value);
+        axiosapi.post("/ktv-app/checkout", checkouts.value)
+                .then(function(response) {
+                    console.log("response.checkout",response.data.message);
+                    if ( response.data.success ) {
+                        Swal.fire({
+                            icon: 'success',
+                            text: response.data.message
+                        }).then(function(result) {
+                            window.location.reload();
+                        })
+                    }
+                })
+                .catch(function(error) {
+                    console.log("response.checkout.err",error.message);
+                })
+    }
 
     
 </script>
