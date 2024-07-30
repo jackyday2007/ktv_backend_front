@@ -13,10 +13,10 @@
         <select v-model="status" @change="orderList(0)" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             <option></option>
             <option>預約</option>
-            <option>報到</option>
+            <option>已報到</option>
             <option>消費中</option>
-            <option>結帳</option>
-            <option>離場</option>
+            <option>已結帳</option>
+            <option>已離場</option>
             <option>取消預約</option>
         </select>
         <label class="input-group-text" for="inputGroupSelect01">顯視筆數</label>
@@ -141,6 +141,8 @@
             order.value.orderId = '';
             order.value.status = '';
             order.value.room = '';
+            order.value.customerId = '';
+            order.value.memberIdId = '';
             orderModal.value.showModal();
         } else {
             callFindByOrderId(id);
@@ -308,31 +310,46 @@
     }
 
     function onCheckIn() {
-        console.log("onCheckIn")
-        axiosapi.post( `/ktv-app/ktvbackend/orders/noCheckIn/${order.value.orderId}`, order.value )
-        .then(function(response) {
-            console.log("modifyOrder.response = ", response);
-            if ( response.data.success ) {
+        Swal.fire({
+            icon: 'question',
+            text: '請確定是否取消',
+            allowOutsideClick: false,
+            showConfirmButton: true,
+            showCancelButton: true,
+        }).then(function(result) {
+            if ( result.isConfirmed ) {
                 Swal.fire({
-                    icon: "success",
-                    text: response.data.message
-                }).then(function(result) {
-                    orderModal.value.hideModal();
-                    orderList(current.value)
+                    text: "執行中......",
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
                 })
-            } else {
-                Swal.fire({
-                    icon: "warning",
-                    text: response.data.message,
-                })
+                axiosapi.post( `/ktv-app/ktvbackend/orders/noCheckIn/${order.value.orderId}`)
+                        .then(function(response) {
+                            console.log("modifyOrder.response = ", response);
+                            if ( response.data.success ) {
+                                Swal.fire({
+                                    icon: "success",
+                                    text: response.data.message
+                                }).then(function(result) {
+                                    orderModal.value.hideModal();
+                                    orderList(current.value)
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: "warning",
+                                    text: response.data.message,
+                                })
+                            }
+                        })
+                        .catch(function(error){
+                            Swal.fire({
+                                icon:"error",
+                                text:error.message
+                            })
+                        })
             }
-        })
-        .catch(function(error){
-            Swal.fire({
-                icon:"error",
-                text:error.message
-            })
-        })
+        });
+        
         
     }
 

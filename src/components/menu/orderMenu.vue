@@ -117,6 +117,9 @@
     const itemInputs = ref({})
     const allMenus = ref(new Map());
 
+    const exampleRef = ref(null);
+    const exampleModal = ref(null);
+
     onMounted(() => {
         const menuOffcanvas = new bootstrap.Offcanvas(document.getElementById('menuOffcanvas'));
         allOrderMenu();
@@ -134,7 +137,6 @@
     // new function
     function confirmOrder() {
         const selectedItems = [...checkedItems.value].map(itemId => {
-            // const item = orderMenus.value.find(item => item.itemId === itemId) || {};
             const item = allMenus.value.get(itemId) || {};
             return {
                 orderId: props.orderId,
@@ -145,10 +147,10 @@
         });
         doinput('checkedItems', [...checkedItems.value]);
         emits('insertOrderDetails', selectedItems);
-
         // 清空 checkedItems 和 itemInputs
         checkedItems.value.clear();
         itemInputs.value = {};
+        hideMenuOffcanvas()
     }
 
     function updateCheckedItems(itemId, event) {
@@ -210,6 +212,13 @@
                 .catch()
     }
 
+    function hideMenuOffcanvas() {
+        const menuOffcanvasElement = document.getElementById('menuOffcanvas');
+        const menuOffcanvas = bootstrap.Offcanvas.getInstance(menuOffcanvasElement);
+        if (menuOffcanvas) {
+            menuOffcanvas.hide();
+        }
+    }
     
 
 </script>

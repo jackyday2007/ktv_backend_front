@@ -7,6 +7,7 @@
     data-bs-target="#consumerOffcanvas"
     aria-controls="offcanvasRight"
     >消費明細</button>
+    
 
     <div class="offcanvas offcanvas-end" tabindex="-1" id="consumerOffcanvas" aria-labelledby="offcanvasRightLabel" style="width: 50%; background-color: #343a40;">
         <div class="offcanvas-header">
@@ -14,7 +15,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-
             <table class="table table-dark table-sm">
                 <thead>
                     <tr>
@@ -68,9 +68,9 @@
 
 
 
+
     onMounted(() => {
         const consumerOffcanvas = new bootstrap.Offcanvas(document.getElementById('consumerOffcanvas'));
-        // detailList();
     });
 
 
@@ -84,10 +84,8 @@
     }
     
     function handleClick() {
-
         consumerOffcanvas;
         detailList();
-
     }
 
 </script>
