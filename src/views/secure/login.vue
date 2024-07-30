@@ -66,6 +66,7 @@
                 ).then(function (result) {
                     if (result.isConfirmed) {
                         axiosapi.defaults.headers.authorization = `Bearer ${response.data.token}`
+                        sessionStorage.setItem("token" , response.data.token)
                         sessionStorage.setItem("user", JSON.stringify(response.data.user));
                         setUser(response.data.user)
                         router.push("/");

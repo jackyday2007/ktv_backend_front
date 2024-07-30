@@ -7,12 +7,12 @@ const axiosapi = axios.create({
 
 axiosapi.interceptors.response.use(
     function (response) {
-        console.log("interceptors.response = ", response)
         return response;
     },
     function (error) {
+        console.log(error);
         if (error.response && error.response.status && error.response.status === 403) {
-            sessionStorage.clear();
+
             Swal.fire({
                 text: "權限不足",
                 icon: "error"
