@@ -1,4 +1,3 @@
-import List from "../../components/order/OrdersList.vue";
 import Orders from "./Orders.vue";
 
 

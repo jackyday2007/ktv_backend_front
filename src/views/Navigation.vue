@@ -76,8 +76,7 @@
                                     icon: 'success',
                                     text: response.data.message
                                 }).then(function(result) {
-
-                                    router.push("/secure/login");
+                                    sessionStorage.clear();
                                     window.location.reload();
                                 })
                             }

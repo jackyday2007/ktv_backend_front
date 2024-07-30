@@ -17,7 +17,7 @@
     
     // ============ 變數 ============
     const props = defineProps(["order"])
-    
+    console.log("get = ", sessionStorage.getItem('token'))
 
     
 
