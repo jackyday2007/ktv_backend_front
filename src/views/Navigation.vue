@@ -29,7 +29,7 @@
                     </div>
             </div>
             <div>
-                <span style="color: white;">目前使用者：{{ user }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span v-if="user" style="color: white;">目前使用者：{{ user }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <font-awesome-icon v-if="!user" @click="login" icon="fa-solid fa-right-to-bracket" size="2xl" style="color: #ffffff;"  />
                 <font-awesome-icon v-if="user" @click="logout" icon="fa-solid fa-right-from-bracket" size="2xl" style="color: #ffffff;"  />
                 
@@ -78,6 +78,7 @@
                                     text: response.data.message
                                 }).then(function(result) {
                                     sessionStorage.clear();
+                                    window.location.reload();
                                     router.push("/secure/login");
                                 })
                             }
@@ -91,7 +92,6 @@
             }
         })
     }
-
     function goHome() {
         router.push("/");
     }
