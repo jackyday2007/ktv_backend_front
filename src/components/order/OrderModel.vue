@@ -219,7 +219,7 @@
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
     import CustomerCheck from "@/components/customer/CustomerCheck.vue";
-    import MemberCheck from "../members/memberCheck.vue";
+    import MemberCheck from "../members/MemberCheck.vue";
     import OrderMenu from "../menu/orderMenu.vue";
     import ConsumerDetails from "@/components/menu/ConsumerDetails.vue";
 
