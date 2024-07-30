@@ -10,16 +10,16 @@
             <span class="input-group-text">包廂尺寸</span>
             <select v-model="searchSize" @change="findBySize(searchSize)" class="form-control">
                 <option value="">所有包廂</option>
-                <option value="小包廂">小包廂</option>
-                <option value="中包廂">中包廂</option>
-                <option value="大包廂">大包廂</option>
+                <option value="小">小</option>
+                <option value="中">中</option>
+                <option value="大">大</option>
             </select>
 
             <span class="input-group-text">包廂狀態</span>
             <select v-model="searchStatus" @change="findByStatus(searchStatus)" class="form-control">
                 <option value="">所有狀態</option>
                 <option value="使用中">使用中</option>
-                <option value="可使用">可使用</option>
+                <option value="開放中">開放中</option>
                 <option value="維護中">維護中</option>
             </select>
 

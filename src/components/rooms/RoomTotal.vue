@@ -8,28 +8,28 @@
           <tr>
             <th>尺寸/狀態</th>
             <th>使用中</th>
-            <th>可使用</th>
+            <th>開放中</th>
             <th>維護中</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>大包廂</td>
-            <td class="animated-cell">{{ countRooms('大包廂', '使用中') }}</td>
-            <td class="animated-cell">{{ countRooms('大包廂', '可使用') }}</td>
-            <td class="animated-cell">{{ countRooms('大包廂', '維護中') }}</td>
+            <td class="animated-cell">{{ countRooms('大', '使用中') }}</td>
+            <td class="animated-cell">{{ countRooms('大', '開放中') }}</td>
+            <td class="animated-cell">{{ countRooms('大', '維護中') }}</td>
           </tr>
           <tr>
             <td>中包廂</td>
-            <td class="animated-cell">{{ countRooms('中包廂', '使用中') }}</td>
-            <td class="animated-cell">{{ countRooms('中包廂', '可使用') }}</td>
-            <td class="animated-cell">{{ countRooms('中包廂', '維護中') }}</td>
+            <td class="animated-cell">{{ countRooms('中', '使用中') }}</td>
+            <td class="animated-cell">{{ countRooms('中', '開放中') }}</td>
+            <td class="animated-cell">{{ countRooms('中', '維護中') }}</td>
           </tr>
           <tr>
             <td>小包廂</td>
-            <td class="animated-cell">{{ countRooms('小包廂', '使用中') }}</td>
-            <td class="animated-cell">{{ countRooms('小包廂', '可使用') }}</td>
-            <td class="animated-cell">{{ countRooms('小包廂', '維護中') }}</td>
+            <td class="animated-cell">{{ countRooms('小', '使用中') }}</td>
+            <td class="animated-cell">{{ countRooms('小', '開放中') }}</td>
+            <td class="animated-cell">{{ countRooms('小', '維護中') }}</td>
           </tr>
         </tbody>
       </table>
