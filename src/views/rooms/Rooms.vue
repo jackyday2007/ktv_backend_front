@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h3>所有包廂</h3>
+        <h1 class="heading">包廂管理</h1>
+        <RoomTotal></RoomTotal>
         <div class="input-group mb-3">
             <button @click="openModal('insert')" type="button" class="btn btn-primary">新增包廂</button>
             
@@ -42,6 +43,7 @@
             </tbody>
         </table>
 
+       
         <div class="pagination-container" v-show="total > 0">
             <Paginate :first-last-button="true"
                 first-button-text="&lt;&lt;"
@@ -65,6 +67,7 @@ import Paginate from 'vuejs-paginate-next';
 import RoomList from '@/components/rooms/RoomList.vue';
 import RoomsModal from '@/components/rooms/RoomsModal.vue';
 import RoomUploadPhoto from '@/components/rooms/RoomUploadPhoto.vue';
+import RoomTotal from '@/components/rooms/RoomTotal.vue';
 
 const rooms = ref([]);
 const room = ref({});
@@ -90,6 +93,7 @@ watch([searchStatus, searchSize], () => {
 onMounted(() => {
     callAll();
 });
+
 
 // 開啟彈窗
 function openModal(action, roomId) {
@@ -270,5 +274,15 @@ function findBySize(size) {
     display: flex;
     justify-content: center;
     margin-top: 20px;
+}
+
+/* 標題樣式 */
+.heading {
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 </style>

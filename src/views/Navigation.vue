@@ -22,6 +22,7 @@
                                 
                             </li>
                             <li><RouterLink class="nav-link active" to="/router/rooms">包廂管理</RouterLink></li>
+                            <li><RouterLink class="nav-link active" to="/router/roomHistory">包廂紀錄</RouterLink></li>
                             <li><RouterLink class="nav-link active" to="/router/problems">問題管理</RouterLink></li>
                            
                         </ul>
