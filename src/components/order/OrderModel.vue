@@ -252,7 +252,6 @@
     const exampleRef = ref(null);
     const exampleModal = ref(null);
     const rooms = ref([ ]);
-    const item = ref({  });
     const customerModal = ref(null)
     const customer = ref({ })
     const result = ref()
@@ -269,6 +268,8 @@
     const orderMenu = ref([{ }])
     const orderMenuResult = ref()
     const checkouts = ref({ })
+    import { useRouter } from 'vue-router';
+    const router = useRouter();
     // =========== 開啟時載入 ===========
     
     onMounted(
@@ -479,7 +480,7 @@
                 .then(function(response) {
                     orderMenuResult.value = response.data.message;
                     console.log("response", response.data.message)
-                    window.location.reload();
+                    hideModal()
                 })
                 .catch(function( error ) {
                     console.log("error.message", error.message)

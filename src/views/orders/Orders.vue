@@ -323,7 +323,7 @@
                     allowOutsideClick: false,
                     showConfirmButton: false,
                 })
-                axiosapi.post( `/ktv-app/ktvbackend/orders/noCheckIn/${order.value.orderId}`, order.value )
+                axiosapi.post( `/ktv-app/ktvbackend/orders/noCheckIn/${order.value.orderId}`)
                         .then(function(response) {
                             console.log("modifyOrder.response = ", response);
                             if ( response.data.success ) {

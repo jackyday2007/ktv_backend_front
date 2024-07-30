@@ -11,7 +11,7 @@
             <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
                 
                 <div class="offcanvas-header">
-                    <a href="/"><img src="../assets/GOLD-PANDA.png" style="width: 100px; height: 40px;"></a>
+                    <img src="../assets/GOLD-PANDA.png" style="width: 100px; height: 40px;" @click="goHome">
                     <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">KTV櫃台系統</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
@@ -29,9 +29,9 @@
                     </div>
             </div>
             <div>
-                <font-awesome-icon icon="fa-solid fa-right-to-bracket" size="2xl" style="color: #ffffff;" />
-                &nbsp;
-                <font-awesome-icon icon="fa-solid fa-right-from-bracket" size="2xl" style="color: #ffffff;" />
+                <span style="color: white;">目前使用者：{{ user }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <font-awesome-icon v-if="!user" @click="login" icon="fa-solid fa-right-to-bracket" size="2xl" style="color: #ffffff;"  />
+                <font-awesome-icon v-if="user" @click="logout" icon="fa-solid fa-right-from-bracket" size="2xl" style="color: #ffffff;"  />
                 
             </div>
             
@@ -43,8 +43,58 @@
 </template>
     
 <script setup>
-    
+    import axiosapi from '@/plugins/axios';
+    import Swal from 'sweetalert2';
     import { RouterLink } from 'vue-router';
+    import { useRouter } from 'vue-router';
+    import { inject } from 'vue'
+
+    const router = useRouter();
+    const user = inject('user')
+
+    function login() {
+        router.push("/secure/login");
+    }
+
+    function logout() {
+        Swal.fire({
+            icon: 'question',
+            text: '確定登出?',
+            allowOutsideClick: false,
+            showConfirmButton: true,
+            showCancelButton: true,
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    text: '登出中',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                })
+                axiosapi.post("/ktv-app/orders/logout")
+                        .then(function(response) {
+                            if ( response.data.success ) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    text: response.data.message
+                                }).then(function(result) {
+                                    sessionStorage.clear();
+                                    router.push("/secure/login");
+                                })
+                            }
+                        })
+                        .catch(function ( error ) {
+                            Swal.fire({
+                                icon: 'error',
+                                text: error.message
+                            })
+                        })
+            }
+        })
+    }
+
+    function goHome() {
+        router.push("/");
+    }
 
 
 
