@@ -98,7 +98,7 @@
     import OrdersRows from '@/components/order/OrdersRows.vue'
     import Paginate from 'vuejs-paginate-next';
     import OrderModel from '@/components/order/OrderModel.vue'
-import router from '@/router/router';
+    import router from '@/router/router';
     
     
     console.log("order.get = ", sessionStorage.getItem('token') )

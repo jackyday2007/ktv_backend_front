@@ -352,7 +352,7 @@
         let request = {
             "max" : 100
         }
-        axiosapi.post("/ktv-app/rooms/findAll", request)
+        axiosapi.post("/ktv-app/ktvbackend/rooms/findAll", request)
             .then( function( response ) {
                 console.log("room.response = ", response);
                 rooms.value = response.data.list;
