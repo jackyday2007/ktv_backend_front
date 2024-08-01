@@ -97,13 +97,18 @@
     import OrdersRows from '@/components/order/OrdersRows.vue'
     import Paginate from 'vuejs-paginate-next';
     import OrderModel from '@/components/order/OrderModel.vue'
+    import router from '@/router/router';
     
     
     // =========== 開啟時載入 ===========
 
     onMounted (
         function() {
-            orderList()
+            if(!sessionStorage.getItem("user")){
+                router.push("/secure/login");
+            }else{
+                orderList()
+            }
         }
     )
 

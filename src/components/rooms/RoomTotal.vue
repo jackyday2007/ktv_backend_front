@@ -46,7 +46,7 @@ const rooms = ref([]);
 
 // 取得所有包廂數據
 onMounted(() => {
-  axiosapi.post("/ktv-app/rooms/findAllNoPage", {})
+  axiosapi.post("/ktv-app/ktvbackend/rooms/findAllNoPage", {})
     .then(response => {
       rooms.value = response.data.list; // 設置為所有資料
     })
