@@ -27,5 +27,4 @@ const axiosapi = axios.create({
 //     }
 // );
 
-
 export default axiosapi;

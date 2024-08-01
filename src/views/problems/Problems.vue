@@ -23,7 +23,8 @@
         <th>事件問題</th>
         <th>包廂號碼</th>
         <th>說明內容</th>
-        <th>發生時間</th>
+        <th @click="sortBy('eventDate')">發生時間<span v-if="sortDirection === 'asc'" class="sort-arrow">🔺</span>
+          <span v-else class="sort-arrow">🔻</span></th>
         <th>結案時間</th>
         <th>處理狀態</th>
         <th>修改</th>
@@ -65,11 +66,11 @@ import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
 import Paginate from 'vuejs-paginate-next';
 
-const total = ref(0);   //總資料筆數
-const pages = ref(0);   //總共頁數
-const current = ref(1); //目前頁碼
-const rows = ref(10);    //最多抓幾筆資料
-const start = ref(0);   //從哪裡開始抓資料
+const total = ref(0);   // 總資料筆數
+const pages = ref(0);   // 總共頁數
+const current = ref(1); // 目前頁碼
+const rows = ref(10);   // 最多抓幾筆資料
+const start = ref(0);   // 從哪裡開始抓資料
 const lastPageRows = ref(0);
 
 const problems = ref([]);
@@ -79,9 +80,17 @@ const isShowInsertButton = ref(false);
 const searchProblemId = ref("");
 const searchRoomId = ref("");
 const searchStatus = ref("");
+const sortField = ref("eventDate"); // 默認排序欄位
+const sortDirection = ref("asc"); // 默認排序方向
+
+// =========== 開啟時載入 ===========
 
 onMounted(() => {
-  callFind();
+  if (!sessionStorage.getItem("user")) {
+    router.push("/secure/login");
+  } else {
+    callFind();
+  }
 });
 
 function openModal(action, problemId) {
@@ -109,17 +118,17 @@ function callFindById(problemId) {
 
 function searchByRoomId() {
   if (searchRoomId.value.trim() === "") {
-    callFind(); // If no room ID, just fetch all data
+    callFind(); // 如果包廂號碼為空，則查詢所有資料
   } else {
     axiosapi.get(`/ktv-app/ktvbackend/problems/findProblemsByRoom/${searchRoomId.value}`).then(response => {
       problems.value = response.data.list;
       total.value = response.data.count;
       pages.value = Math.ceil(total.value / rows.value);
       lastPageRows.value = total.value % rows.value;
-      
+
       setTimeout(() => {
         Swal.close();
-      }, 500);
+      }, 200);
     }).catch(error => {
       Swal.fire({
         text: "查詢失敗: " + error.message,
@@ -219,7 +228,9 @@ function callFind(page) {
     "max": rows.value,
     "problemId": searchProblemId.value || null,
     "roomId": searchRoomId.value || null,
-    "status": searchStatus.value || null
+    "status": searchStatus.value || null,
+    "sortField": sortField.value,
+    "sortDirection": sortDirection.value
   };
 
   axiosapi.post('/ktv-app/ktvbackend/problems/findAll', request).then(response => {
@@ -237,6 +248,17 @@ function callFind(page) {
       text: '查詢失敗: ' + error.message,
     });
   });
+}
+
+function sortBy(field) {
+  // 切換排序方向
+  if (sortField.value === field) {
+    sortDirection.value = sortDirection.value === "asc" ? "desc" : "asc";
+  } else {
+    sortField.value = field;
+    sortDirection.value = "asc"; // 默認為升序
+  }
+  callFind(); // 重新加載數據
 }
 </script>
 

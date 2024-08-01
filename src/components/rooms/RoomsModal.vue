@@ -26,7 +26,7 @@
                 <select id="status" name="status" :value="modelValue.status" @input="doinput('status', $event)" class="form-select">
                   <option value="">選擇包廂狀態</option>
                   <option>使用中</option>
-                  <option>可使用</option>
+                  <option>開放中</option>
                   <option>維護中</option>
                 </select>
               </div>
@@ -36,9 +36,9 @@
               <div class="col-sm-8">
                 <select id="size" name="size" :value="modelValue.size" @input="doinput('size', $event)" class="form-select">
                   <option value="">選擇包廂大小</option>
-                  <option>小包廂</option>
-                  <option>中包廂</option>
-                  <option>大包廂</option>
+                  <option>小</option>
+                  <option>中</option>
+                  <option>大</option>
                 </select>
               </div>
             </div>
