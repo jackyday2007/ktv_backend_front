@@ -352,7 +352,7 @@
         let request = {
             "max" : 100
         }
-        axiosapi.post("/ktv-app/rooms/findAll", request)
+        axiosapi.post("/ktv-app/ktvbackend/rooms/findAll", request)
             .then( function( response ) {
                 console.log("room.response = ", response);
                 rooms.value = response.data.list;
@@ -503,6 +503,22 @@
                         }).then(function(result) {
                             window.location.reload();
                         })
+                    } else {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                            });
+                            Toast.fire({
+                            icon: 'error',
+                            title: response.data.message
+                        });
                     }
                 })
                 .catch(function(error) {

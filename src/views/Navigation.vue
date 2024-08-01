@@ -19,20 +19,16 @@
                         <ul class="navbar-nav">
                             <li><RouterLink class="nav-link active" to="/">首頁</RouterLink></li>
                             <li class="nav-item">
-                                <RouterLink :to="{ name : 'secure-link-router' }" class="nav-link active" aria-current="page" >登入</RouterLink>
-                            </li>
-                            <li class="nav-item">
                                 <RouterLink :to="{ name : 'orders-list-router' }" class="nav-link active" aria-current="page" >訂單資訊</RouterLink>
                             </li>
                             <li><RouterLink class="nav-link active" to="/router/rooms">包廂管理</RouterLink></li>
                             <li><RouterLink class="nav-link active" to="/router/roomHistory">包廂紀錄</RouterLink></li>
                             <li><RouterLink class="nav-link active" to="/router/problems">問題管理</RouterLink></li>
-                           
                         </ul>
                     </div>
             </div>
             <div>
-                <span v-if="user" style="color: white;">目前使用者：{{ user }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                <span v-show="user" style="color: white;">目前使用者：{{ user }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
                 <font-awesome-icon v-if="!user" @click="login" icon="fa-solid fa-right-to-bracket" size="2xl" style="color: #ffffff;"  />
                 <font-awesome-icon v-if="user" @click="logout" icon="fa-solid fa-right-from-bracket" size="2xl" style="color: #ffffff;"  />
                 
@@ -82,7 +78,6 @@
                                 }).then(function(result) {
                                     sessionStorage.clear();
                                     window.location.reload();
-                                    router.push("/secure/login");
                                 })
                             }
                         })

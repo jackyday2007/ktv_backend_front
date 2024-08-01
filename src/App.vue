@@ -8,16 +8,22 @@
 </template>
   
 <script setup>
-  
+
   import Navigation from './views/Navigation.vue';
   import { ref, provide } from 'vue'
+
   
   const user = ref(null);
+  const token = ref(null);
+
+  
   provide('user', user)
   provide('setUser', (newUser) => {
     user.value = newUser;
     }
   )
+
+
 
 
 </script>

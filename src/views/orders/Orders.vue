@@ -92,18 +92,28 @@
 <script setup>
     import axiosapi from '@/plugins/axios';
     import OrdersList from '@/components/order/OrdersList.vue';
-    import { onMounted, ref } from 'vue';
+    import { onBeforeMount, onMounted, ref} from 'vue';
+
     import Swal from 'sweetalert2';
     import OrdersRows from '@/components/order/OrdersRows.vue'
     import Paginate from 'vuejs-paginate-next';
     import OrderModel from '@/components/order/OrderModel.vue'
+    import router from '@/router/router';
     
     
+    console.log("order.get = ", sessionStorage.getItem('token') )
+    console.log("order.get = ", sessionStorage.getItem('user') )
+
     // =========== 開啟時載入 ===========
 
-    onMounted (
+    onBeforeMount (
         function() {
-            orderList()
+            if (!sessionStorage.getItem("user")) {
+                router.push("/secure/login")
+            } else {
+                orderList()
+            }
+            
         }
     )
 
@@ -426,6 +436,7 @@
             "max": rows.value,
             "dir" : false,
             "order" : "orderId",
+            // "memberId" : memberId.value,
             "memberId" : memberId.value,
             "room" : roomId.value,
             "orderId" : orderId.value,
