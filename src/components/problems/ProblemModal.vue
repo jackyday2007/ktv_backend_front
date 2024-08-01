@@ -23,7 +23,7 @@
             <div class="mb-3 row">
               <label for="roomId" class="col-sm-4 col-form-label">包廂號碼</label>
               <div class="col-sm-8">
-                <input type="text" id="roomId" name="roomId" :value="modelValue.roomId" @input="doinput('roomId', $event)" class="form-control" placeholder="輸入包廂號碼">
+                <input type="text" id="roomId" name="roomId" :value="modelValue.roomId" @input="doinput('roomId', $event)" class="form-control" placeholder="輸入包廂號碼" :disabled="!isShowInsertButton" >
               </div>
             </div>
             <div class="mb-3 row">

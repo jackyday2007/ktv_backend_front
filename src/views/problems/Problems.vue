@@ -151,28 +151,34 @@ function callModify() {
     }
   }
 
-  axiosapi.put(`/ktv-app/ktvbackend/problems/modify/${problem.value.problemId}`, problem.value).then(response => {
-    if (response.data.success) {
+  axiosapi.put(`/ktv-app/ktvbackend/problems/modify/${problem.value.problemId}`, problem.value)
+    .then(response => {
+      if (response.data.success) {
+        Swal.fire({
+          icon: "success",
+          text: response.data.message,
+        }).then(() => {
+          problemRef.value.hideModal();
+          callFind(current.value);
+        });
+      } else {
+        Swal.fire({
+          icon: "warning",
+          text: response.data.message,
+        });
+      }
+    })
+    .catch(error => {
+      // 提取伺服器返回的錯誤信息
+      let errorMessage = error.response && error.response.data ? error.response.data.message : error.message;
+
       Swal.fire({
-        icon: "success",
-        text: response.data.message,
-      }).then(() => {
-        problemRef.value.hideModal();
-        callFind(current.value);
+        icon: "error",
+        text: "修改錯誤：" + errorMessage,
       });
-    } else {
-      Swal.fire({
-        icon: "warning",
-        text: response.data.message,
-      });
-    }
-  }).catch(error => {
-    Swal.fire({
-      icon: "error",
-      text: "修改錯誤：" + error.message,
     });
-  });
 }
+
 
 function callCreate() {
   Swal.fire({
