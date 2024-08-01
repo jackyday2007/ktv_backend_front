@@ -235,6 +235,7 @@ function callFind(page) {
 
   axiosapi.post('/ktv-app/ktvbackend/problems/findAll', request).then(response => {
     problems.value = response.data.list;
+    console.log("problems.value", problems.value)
     total.value = response.data.count;
     pages.value = Math.ceil(total.value / rows.value);
     lastPageRows.value = total.value % rows.value;
