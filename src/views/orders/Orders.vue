@@ -436,6 +436,7 @@
             "max": rows.value,
             "dir" : false,
             "order" : "orderId",
+            // "memberId" : memberId.value,
             "memberId" : memberId.value,
             "room" : roomId.value,
             "orderId" : orderId.value,
