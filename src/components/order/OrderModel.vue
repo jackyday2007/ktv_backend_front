@@ -481,6 +481,7 @@
                     orderMenuResult.value = response.data.message;
                     console.log("response", response.data.message)
                     hideModal()
+                    location.reload();
                 })
                 .catch(function( error ) {
                     console.log("error.message", error.message)

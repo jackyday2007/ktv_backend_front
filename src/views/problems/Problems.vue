@@ -96,7 +96,7 @@ function openModal(action, problemId) {
 }
 
 function callFindById(problemId) {
-  axiosapi.get(`/ktv-app/problems/findByProblemId/${problemId}`).then(response => {
+  axiosapi.get(`/ktv-app/ktvbackend/problems/findByProblemId/${problemId}`).then(response => {
     problem.value = response.data.list[0];
     problemRef.value.showModal();
   }).catch(error => {
@@ -111,7 +111,7 @@ function searchByRoomId() {
   if (searchRoomId.value.trim() === "") {
     callFind(); // If no room ID, just fetch all data
   } else {
-    axiosapi.get(`/ktv-app/problems/findProblemsByRoom/${searchRoomId.value}`).then(response => {
+    axiosapi.get(`/ktv-app/ktvbackend/problems/findProblemsByRoom/${searchRoomId.value}`).then(response => {
       problems.value = response.data.list;
       total.value = response.data.count;
       pages.value = Math.ceil(total.value / rows.value);
@@ -142,7 +142,7 @@ function callModify() {
     }
   }
 
-  axiosapi.put(`/ktv-app/problems/modify/${problem.value.problemId}`, problem.value).then(response => {
+  axiosapi.put(`/ktv-app/ktvbackend/problems/modify/${problem.value.problemId}`, problem.value).then(response => {
     if (response.data.success) {
       Swal.fire({
         icon: "success",
@@ -178,7 +178,7 @@ function callCreate() {
     }
   }
 
-  axiosapi.post("/ktv-app/problems/create", problem.value).then(response => {
+  axiosapi.post("/ktv-app/ktvbackend/problems/create", problem.value).then(response => {
     if (response.data.success) {
       Swal.fire({
         icon: "success",
@@ -222,7 +222,7 @@ function callFind(page) {
     "status": searchStatus.value || null
   };
 
-  axiosapi.post('/ktv-app/problems/findAll', request).then(response => {
+  axiosapi.post('/ktv-app/ktvbackend/problems/findAll', request).then(response => {
     problems.value = response.data.list;
     total.value = response.data.count;
     pages.value = Math.ceil(total.value / rows.value);
