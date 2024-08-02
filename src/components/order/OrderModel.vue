@@ -149,7 +149,7 @@
                     @input="doinput('startTime', $event)"
                     >
                         <option></option>
-                        <option v-for=" item in timeSolt" :key="item.startTime">
+                        <option v-for="item in filteredTimeSlots" :key="item.startTime">
                         {{ item.startTime }}
                         </option>
                     </select>
@@ -236,7 +236,7 @@
 <script setup>
     
     import bootstrap from "bootstrap/dist/js/bootstrap.bundle.min.js"
-    import { ref, onMounted } from 'vue'
+    import { ref, computed, onMounted } from 'vue'
     import axiosapi from "@/plugins/axios";
     import Swal from "sweetalert2";
     import CustomerCheck from "@/components/customer/CustomerCheck.vue";
@@ -269,7 +269,33 @@
     const orderMenuResult = ref()
     const checkouts = ref({ })
     import { useRouter } from 'vue-router';
-    const router = useRouter();
+    const currentTime = ref(new Date()); // 用於比較當前時間
+
+    // 計算 `filteredTimeSlots`
+    const filteredTimeSlots = computed(() => {
+        const selectedDate = new Date(props.modelValue.orderDate);
+        const now = new Date();
+
+        if (selectedDate.toDateString() === now.toDateString()) {
+            const filtered = timeSolt.value.filter(timeSlot => {
+                const [hours, minutes] = timeSlot.startTime.split(':');
+                const timeSlotDate = new Date();
+                timeSlotDate.setHours(parseInt(hours, 10));
+                timeSlotDate.setMinutes(parseInt(minutes, 10));
+                timeSlotDate.setSeconds(0);
+                timeSlotDate.setMilliseconds(0);
+
+                console.log('Time Slot Date:', timeSlotDate);
+                return timeSlotDate > now;
+            });
+
+            console.log('Filtered Time Slots:', filtered);
+            return filtered;
+        } else {
+            return timeSolt.value;
+        }
+    });
+
     // =========== 開啟時載入 ===========
     
     onMounted(
@@ -338,12 +364,13 @@
 
     function timeList() {
         let request = {}
-        axiosapi.post("/ktv-app/timeSlot/allTime", request)
+        axiosapi.post("/timeSlot/allTime", request)
             .then( function(response) {
-                timeSolt.value = response.data.list
+                timeSolt.value = response.data.list || [];
             })
             .catch(function(error) {
                 console.log("error", error.message)
+                timeSolt.value = [];
             })
 
     }
@@ -352,7 +379,7 @@
         let request = {
             "max" : 100
         }
-        axiosapi.post("/ktv-app/ktvbackend/rooms/findAll", request)
+        axiosapi.post("/ktvbackend/rooms/findAll", request)
             .then( function( response ) {
                 console.log("room.response = ", response);
                 rooms.value = response.data.list;
@@ -386,7 +413,7 @@
             customer.value.phone = null;
         }
 
-        axiosapi.post("/ktv-app/customer/insert", customer.value)
+        axiosapi.post("/customer/insert", customer.value)
                 .then(function(response) {
                     result.value = response.data.message;
                     if ( response.data.message == '請輸入姓名' ) {
@@ -416,7 +443,7 @@
         if ( customer.value.idNumber != null ) {
             console.log("查詢")
             console.log("OrderModal.idNumber = ", customer.value.idNumber)
-            axiosapi(`/ktv-app/customer/${customer.value.idNumber}`)
+            axiosapi(`/customer/${customer.value.idNumber}`)
                 .then(function(response) {
                     if ( response.data != null ) {
                         if ( response.data.list && response.data.list.length > 0 ) {
@@ -446,7 +473,7 @@
         if ( member.value.phone != '' ) {
             console.log("查詢")
             console.log("OrderModal.phone = ", member.value)
-            axiosapi(`/ktv-app/api/members/findWithPhone/${member.value.phone}`)
+            axiosapi(`/api/members/findWithPhone/${member.value.phone}`)
                 .then(function(response) {
                     if ( response.data != null ) {
                         if ( response.data.list && response.data.list.length > 0 ) {
@@ -476,7 +503,7 @@
 
     function insertOrderDetails(checkedItems) {
         console.log("checkedItems = ", checkedItems)
-        axiosapi.post("/ktv-app/orderDetail/new", checkedItems)
+        axiosapi.post("/orderDetail/new", checkedItems)
                 .then(function(response) {
                     orderMenuResult.value = response.data.message;
                     console.log("response", response.data.message)
@@ -494,7 +521,7 @@
             checkouts.value.pay = null
         }
         console.log("checkouts", checkouts.value);
-        axiosapi.post("/ktv-app/checkout", checkouts.value)
+        axiosapi.post("/checkout", checkouts.value)
                 .then(function(response) {
                     console.log("response.checkout",response.data.message);
                     if ( response.data.success ) {

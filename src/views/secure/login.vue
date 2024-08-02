@@ -52,7 +52,7 @@
             "password": password.value
         };
 
-        axiosapi.post("/ktv-app/orders/login", request)
+        axiosapi.post("/orders/login", request)
         .then(function (response) {
             console.log(response);
             if (response.data.success) {
