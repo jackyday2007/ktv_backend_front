@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onBeforeMount, watch } from 'vue';
 import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
 import Paginate from 'vuejs-paginate-next';
@@ -68,6 +68,7 @@ import RoomList from '@/components/rooms/RoomList.vue';
 import RoomsModal from '@/components/rooms/RoomsModal.vue';
 import RoomUploadPhoto from '@/components/rooms/RoomUploadPhoto.vue';
 import RoomTotal from '@/components/rooms/RoomTotal.vue';
+import router from '@/router/router';
 
 const rooms = ref([]);
 const room = ref({});
@@ -93,7 +94,7 @@ watch([searchStatus, searchSize], () => {
 
 // =========== 開啟時載入 ===========
 
-onMounted (
+onBeforeMount (
     function() {
         if(!sessionStorage.getItem("user")){
             router.push("/secure/login");

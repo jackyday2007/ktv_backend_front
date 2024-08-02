@@ -61,10 +61,11 @@
 <script setup>
 import ProblemList from '@/components/problems/problemList.vue';
 import ProblemModal from '@/components/problems/ProblemModal.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeMount } from 'vue';
 import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
 import Paginate from 'vuejs-paginate-next';
+import router from '@/router/router';
 
 const total = ref(0);   // 總資料筆數
 const pages = ref(0);   // 總共頁數
@@ -85,13 +86,25 @@ const sortDirection = ref("asc"); // 默認排序方向
 
 // =========== 開啟時載入 ===========
 
-onMounted(() => {
-  if (!sessionStorage.getItem("user")) {
-    router.push("/secure/login");
-  } else {
-    callFind();
-  }
-});
+// onBeforeMount(() => {
+//   if (!sessionStorage.getItem("user")) {
+//     router.push("/secure/login");
+//   } else {
+//     callFind();
+//   }
+// });
+
+
+  onBeforeMount (
+        function() {
+            if (!sessionStorage.getItem("user")) {
+                router.push("/secure/login")
+            } else {
+              callFind();
+            }
+            
+        }
+    )
 
 function openModal(action, problemId) {
   if (action === 'insert') {

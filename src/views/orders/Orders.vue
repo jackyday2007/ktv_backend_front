@@ -24,7 +24,7 @@
 
         <OrdersRows
             :total="total"
-            :options="[2, 3, 4, 5, 10]"
+            :options="[2, 3, 4, 5, 10, 13]"
             v-model="rows"
             @change="orderList">
         >
@@ -123,7 +123,7 @@
     const pages = ref(0);
     const orders = ref({ });
     const current = ref(0);
-    const rows = ref(10);
+    const rows = ref(13);
     const start = ref(0);
     const lastPageRows = ref(0);
 
@@ -395,6 +395,9 @@
         }
         if ( order.value.memberId == "" ) {
             order.value.memberId = null
+        }
+        if ( order.value.hours == "" ) {
+            order.value.hours = null
         }
 
         axiosapi.get(`/ktv-app/ktvbackend/rooms/checkStatus/${order.value.room}`)

@@ -1,7 +1,9 @@
 <template>
 
-<Navigation></Navigation>
-<RouterView></RouterView>
+  <Navigation></Navigation>
+  <RouterView></RouterView>
+
+
 
 
   
@@ -10,20 +12,16 @@
 <script setup>
 
   import Navigation from './views/Navigation.vue';
-  import { ref, provide } from 'vue'
+  import { ref, provide, watch  } from 'vue'
 
   
   const user = ref(null);
-  const token = ref(null);
-
   
   provide('user', user)
   provide('setUser', (newUser) => {
     user.value = newUser;
-    }
+  }
   )
-
-
 
 
 </script>

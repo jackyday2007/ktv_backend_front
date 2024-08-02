@@ -15,6 +15,8 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
+            <p style="color: white;">包廂費計價方式為：基本包廂費用(3H)&nbsp;+&nbsp;(&nbsp;(&nbsp;消費時數&nbsp;-&nbsp;最低時數)&nbsp;*&nbsp;加收費用&nbsp;)</p>
+            <p style="color: white;">加收費用：大包廂&nbsp;-&nbsp;2000、中包廂&nbsp;-&nbsp;1500、小包廂&nbsp;-&nbsp;1000</p>
             <table class="table table-dark table-sm">
                 <thead>
                     <tr>

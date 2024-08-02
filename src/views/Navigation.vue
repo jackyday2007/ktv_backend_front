@@ -28,10 +28,15 @@
                     </div>
             </div>
             <div>
-                <span v-show="user" style="color: white;">目前使用者：{{ user }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-                <font-awesome-icon v-if="!user" @click="login" icon="fa-solid fa-right-to-bracket" size="2xl" style="color: #ffffff;"  />
-                <font-awesome-icon v-if="user" @click="logout" icon="fa-solid fa-right-from-bracket" size="2xl" style="color: #ffffff;"  />
-                
+                <font-awesome-icon v-if="!user && !users" @click="login" icon="fa-solid fa-right-to-bracket" size="2xl" style="color: #ffffff;"  />
+                <div v-show="user">
+                    <span  style="color: white;">目前使用者：{{ user }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <font-awesome-icon @click="logout" icon="fa-solid fa-right-from-bracket" size="2xl" style="color: #ffffff;"  />
+                </div>
+                <div v-show="users">
+                    <span style="color: white;">目前使用者：{{ users }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <font-awesome-icon @click="logout" icon="fa-solid fa-right-from-bracket" size="2xl" style="color: #ffffff;"  />
+                </div>
             </div>
             
         </div>
@@ -48,9 +53,12 @@
     import { useRouter } from 'vue-router';
     import { inject } from 'vue'
 
+    const users = sessionStorage.getItem("user")
+    console.log("users", users)
     const router = useRouter();
     const user = inject('user')
-
+    console.log("user", user)
+    
     function login() {
         router.push("/secure/login");
     }

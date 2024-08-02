@@ -4,7 +4,7 @@
 </template>
     
 <script setup>   
-    import RoomTotal from '@/components/rooms/RoomTotal.vue';    
+    import RoomTotal from '@/components/rooms/RoomTotal.vue';
 </script>
     
 <style>

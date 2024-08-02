@@ -62,15 +62,24 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import axiosapi from '@/plugins/axios';
 import Swal from 'sweetalert2';
+import router from '@/router/router';
 
 const rooms = ref([]);
 const startDate = ref("");
 const endDate = ref("");
 const currentPage = ref(0);
 const pageSize = ref(6);
+
+onBeforeMount (
+        function() {
+            if (!sessionStorage.getItem("user")) {
+                router.push("/secure/login")
+            }
+        }
+    )
 
 const findByTimeRange = async () => {
     Swal.fire({
