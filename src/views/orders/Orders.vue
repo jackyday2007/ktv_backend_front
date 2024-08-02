@@ -24,7 +24,7 @@
 
         <OrdersRows
             :total="total"
-            :options="[2, 3, 4, 5, 10]"
+            :options="[2, 3, 4, 5, 10, 13]"
             v-model="rows"
             @change="orderList">
         >
@@ -123,7 +123,7 @@
     const pages = ref(0);
     const orders = ref({ });
     const current = ref(0);
-    const rows = ref(4);
+    const rows = ref(13);
     const start = ref(0);
     const lastPageRows = ref(0);
 
@@ -201,32 +201,57 @@
             order.value.startTime = null;
         }
 
-        axiosapi.post("/ktv-app/ktvbackend/orders/testNewOrder", order.value)
-        .then(function( response ) {
-            console.log("response", response)
-            if ( response.data.success ) {
-                Swal.fire({
-                    icon: "success",
-                    text: response.data.message
-                }).then(function(result) {
-                    orderModal.value.hideModal();
-                    orderList(current.value)
+
+        axiosapi.post("/ktv-app/roomCheck", order.value)
+                .then(function(response) {
+                    console.log("roomCheck.response = ", response.data.message)
+                    if ( response.data.success ) {
+                        axiosapi.post("/ktv-app/ktvbackend/orders/testNewOrder", order.value)
+                                .then(function( response ) {
+                                    console.log("response", response)
+                                    if ( response.data.success ) {
+                                        Swal.fire({
+                                            icon: "success",
+                                            text: response.data.message
+                                        }).then(function(result) {
+                                            orderModal.value.hideModal();
+                                            orderList(current.value)
+                                        })
+                                    }
+                                })
+                    } else {
+                        Swal.fire({
+                            icon: 'question',
+                            text: response.data.message,
+                            allowOutsideClick: false,
+                            showConfirmButton: true,
+                            showCancelButton: true,
+                        }).then(function(result) {
+                            if ( result.isConfirmed ) {
+                                axiosapi.post("/ktv-app/ktvbackend/orders/testNewOrder", order.value)
+                                .then(function( response ) {
+                                    console.log("response", response)
+                                    if ( response.data.success ) {
+                                        Swal.fire({
+                                            icon: "success",
+                                            text: '已預訂成功，請現場等候。'
+                                        }).then(function(result) {
+                                            orderModal.value.hideModal();
+                                            orderList(current.value)
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }
                 })
-            } else {
-                Swal.fire({
-                    icon: "warning",
-                    text: response.data.message,
-                })
-            }
-        })
-        .catch(
-            function( error) {
+                .catch(function( error) {
                 Swal.fire({
                     icon: "error",
                     text: "新增失敗" + error.message
                 })
-            }
-        )
+            })
+
     }
 
     function modifyOrder() {
@@ -280,7 +305,6 @@
 
     // 客戶報到
     function checkIn() {
-        console.log("checkIn")
         if ( order.value.customerId == "" ) {
             order.value.customerId = null
         }
@@ -293,6 +317,7 @@
         if ( order.value.numberOfPersons == "" ) {
             order.value.numberOfPersons = null
         }
+
         axiosapi.put( `/ktv-app/ktvbackend/orders/checkIn/${order.value.orderId}`, order.value )
         .then(function(response) {
             console.log("modifyOrder.response = ", response);
@@ -365,41 +390,60 @@
 
     // 進入包廂
     function inTheRoom() {
-        console.log("進入包廂")
         if ( order.value.room == "" ) {
             order.value.room = null
         }
         if ( order.value.memberId == "" ) {
             order.value.memberId = null
         }
-        axiosapi.put( `/ktv-app/ktvbackend/orders/inTheRoom/${order.value.orderId}`, order.value )
-        .then(function(response) {
-            console.log("modifyOrder.response = ", response);
-            if ( response.data.success ) {
-                Swal.fire({
-                    icon: "success",
-                    text: response.data.message
-                }).then(function(result) {
-                    console.log("order.value.result", order.value)
-                    orderModal.value.hideModal();
-                    orderList(current.value)
-                    window.location.reload;
+        if ( order.value.hours == "" ) {
+            order.value.hours = null
+        }
+
+        axiosapi.get(`/ktv-app/ktvbackend/rooms/checkStatus/${order.value.room}`)
+                .then(function(response) {
+                    if (response.data.success) {
+                        axiosapi.put( `/ktv-app/ktvbackend/orders/inTheRoom/${order.value.orderId}`, order.value )
+                                .then(function(response) {
+                                    if ( response.data.success ) {
+                                        Swal.fire({
+                                            icon: "success",
+                                            text: response.data.message
+                                        }).then(function(result) {
+                                            orderModal.value.hideModal();
+                                            location.reload();
+                                        })
+                                    } else {
+                                        Swal.fire({
+                                            icon: "warning",
+                                            text: response.data.message,
+                                            allowOutsideClick: false,
+                                            showConfirmButton: true,
+                                            showCancelButton: true,
+                                        })
+                                    }
+                                })
+                                .catch(function(error){
+                                    console.log("order.value.error", order.value)
+                                    Swal.fire({
+                                        icon:"error",
+                                        text:error.message
+                                    })
+                                })
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            text: response.data.message,
+                        })
+                    }
                 })
-            } else {
-                console.log("order.value.else", order.value)
-                Swal.fire({
-                    icon: "warning",
-                    text: response.data.message,
+                .catch(function(error) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: error.message
+                    })
                 })
-            }
-        })
-        .catch(function(error){
-            console.log("order.value.error", order.value)
-            Swal.fire({
-                icon:"error",
-                text:error.message
-            })
-        })
+        
 
     }
 
@@ -436,7 +480,6 @@
             "max": rows.value,
             "dir" : false,
             "order" : "orderId",
-            // "memberId" : memberId.value,
             "memberId" : memberId.value,
             "room" : roomId.value,
             "orderId" : orderId.value,

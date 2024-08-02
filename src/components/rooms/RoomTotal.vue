@@ -38,14 +38,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeMount } from 'vue';
 import axiosapi from '@/plugins/axios';
+
 
 // 存儲包廂數據
 const rooms = ref([]);
 
 // 取得所有包廂數據
-onMounted(() => {
+onBeforeMount(() => {
   axiosapi.post("/ktv-app/ktvbackend/rooms/findAllNoPage", {})
     .then(response => {
       rooms.value = response.data.list; // 設置為所有資料

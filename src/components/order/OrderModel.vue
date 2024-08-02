@@ -104,6 +104,8 @@
                     <input @input="doinput('orderDate', $event)" type="date"
                     :disabled="modelValue.status === '預約' || modelValue.status === '取消預約' || modelValue.status === '報到' || modelValue.status === '消費中' || modelValue.status === '已結帳'"
                     :value="modelValue.orderDate"
+                    :min="minOrderDate"
+                    :max="maxOrderDate"
                     class="form-control"
                     aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default">
@@ -120,13 +122,11 @@
                     aria-describedby="inputGroup-sizing-default">
                     >
                         <option></option>
-                        <option>1</option>
-                        <option>2</option>
                         <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
                         <option>6</option>
+                        <option>8</option>
                     </select>
+                    <input type="hidden" :value="modelValue.hours">
                 </div>
 
                 <div class="modal-body, input-group mb-3" v-show="modelValue.status != ''">
@@ -481,6 +481,7 @@
                     orderMenuResult.value = response.data.message;
                     console.log("response", response.data.message)
                     hideModal()
+                    location.reload();
                 })
                 .catch(function( error ) {
                     console.log("error.message", error.message)
@@ -525,6 +526,18 @@
                     console.log("response.checkout.err",error.message);
                 })
     }
+
+    // 計算今天的日期和一年後的日期
+    const today = new Date();
+    const oneYearLater = new Date();
+    oneYearLater.setFullYear(today.getFullYear() + 1);
+
+    const minDate = today.toISOString().split('T')[0];
+    const maxDate = oneYearLater.toISOString().split('T')[0];
+
+    // 在 setup 函數中設定計算出的日期
+    const minOrderDate = ref(minDate);
+    const maxOrderDate = ref(maxDate);
 
     
 </script>
