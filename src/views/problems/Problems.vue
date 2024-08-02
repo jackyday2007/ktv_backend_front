@@ -1,5 +1,5 @@
 <template>
-  <h3>包廂問題管理</h3>
+  <h3 class="heading">包廂問題管理</h3>
   <div class="input-group mb-3">
     <button type="button" class="btn btn-primary" @click="openModal('insert')">新增問題</button>
     <span class="input-group-text" id="inputGroup-sizing-default">訂單編號</span>
@@ -27,7 +27,7 @@
           <span v-else class="sort-arrow">🔻</span></th>
         <th>結案時間</th>
         <th>處理狀態</th>
-        <th>修改</th>
+        <th>功能</th>
       </tr>
     </thead>
     <tbody>
@@ -35,7 +35,6 @@
         v-for="item in problems"
         :key="item.problemId"
         :problem="item"
-        @dblclick="openModal('update', item.problemId)"
         @problem-update="openModal('update', item.problemId)"
       ></ProblemList>
     </tbody>
@@ -269,5 +268,13 @@ function sortBy(field) {
 </script>
 
 <style>
-/* Add your styles here */
+/* 標題樣式 */
+.heading {
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
 </style>

@@ -9,13 +9,14 @@
           ref="fileInput"
           style="display: none;"
         />
-        <button
+        <!-- <button
           type="button"
           @click="triggerFileUpload"
-          class="upload-button btn btn-outline-info"
+          class="btn btn-outline-success"
         >
           選擇並上傳照片
-        </button>
+        </button> -->
+        <font-awesome-icon :icon="['fas', 'image']" @click="triggerFileUpload" class="icon-large"/>
         <span v-if="photoFile" class="file-name">{{ photoFile.name }}</span>
         <span v-if="uploadStatus" class="status upload-status">{{ uploadStatus }}</span>
       </div>
@@ -26,6 +27,11 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faImage);
 
 const photoName = ref('');
 const photoFile = ref(null);
@@ -76,6 +82,11 @@ function triggerFileUpload() {
   align-items: center;
 }
 
+.upload-form {
+  display: flex;
+  align-items: center;
+}
+
 .upload-button {
   margin-right: 10px;
 }
@@ -85,7 +96,14 @@ function triggerFileUpload() {
 }
 
 .upload-status {
-  margin-left: 10px;
+  margin-left: 15px; /* 增加與其他元素的距離 */
   font-weight: bold;
+}
+
+/* 使 Font Awesome 圖標變大 */
+.icon-large {
+  font-size: 2rem; /* 調整大小，可以根據需要設置 */
+  cursor: pointer; /* 使圖標看起來可以點擊 */
+  margin-left: 10px; /* 調整與其他元素的距離 */
 }
 </style>

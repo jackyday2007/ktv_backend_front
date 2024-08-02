@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h3 class="heading">包廂紀錄查詢</h3>
         <div class="input-group mb-3">
             <span class="input-group-text">選擇日期範圍</span>
             <input type="date" v-model="startDate" class="form-control">
@@ -12,6 +13,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>訂單號碼</th>
                     <th>包廂號碼</th>
                     <th>包廂尺寸</th>
                     <th>日期</th>
@@ -23,6 +25,7 @@
             <tbody>
                 <tr v-for="item in paginatedRooms" :key="item.id">
                     <td>{{ item.id }}</td>
+                    <td>{{ item.orderId }}</td>
                     <td>{{ item.roomId }}</td>
                     <td>{{ item.size }}</td>
                     <td>{{ item.date }}</td>
@@ -31,7 +34,7 @@
                     <td>{{ item.status }}</td>
                 </tr>
                 <tr v-if="paginatedRooms.length === 0">
-                    <td colspan="7" class="text-center">沒有資料</td>
+                    <td colspan="8" class="text-center">沒有資料</td>
                 </tr>
             </tbody>
         </table>
@@ -70,7 +73,7 @@ const rooms = ref([]);
 const startDate = ref("");
 const endDate = ref("");
 const currentPage = ref(0);
-const pageSize = ref(6);
+const pageSize = ref(8);
 
 const findByTimeRange = async () => {
     Swal.fire({
@@ -130,5 +133,15 @@ const changePage = (page) => {
     display: flex;
     justify-content: center;
     margin-top: 1rem;
+}
+
+/* 標題樣式 */
+.heading {
+    text-align: center;
+    font-weight: bold;
+    font-size: 24px;
+    color: #333;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
 }
 </style>
