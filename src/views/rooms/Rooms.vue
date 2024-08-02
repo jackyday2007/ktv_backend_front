@@ -140,7 +140,7 @@ function callAll(page = 1) {
         request.size = searchSize.value;
     }
 
-    axiosapi.post("/ktv-app/ktvbackend/rooms/findAll", request).then(response => {
+    axiosapi.post("/ktvbackend/rooms/findAll", request).then(response => {
         rooms.value = response.data.list;
         total.value = response.data.count;
         pages.value = Math.ceil(total.value / rows.value);
@@ -156,7 +156,7 @@ function callAll(page = 1) {
 
 // 用 roomId 搜尋
 function callFindById(roomId) {
-    axiosapi.get(`/ktv-app/ktvbackend/rooms/findByRoomId/${roomId}`).then(response => {
+    axiosapi.get(`/ktvbackend/rooms/findByRoomId/${roomId}`).then(response => {
         room.value = response.data.list[0];
         roomRef.value.showModal();
     }).catch(error => {
@@ -182,7 +182,7 @@ function callCreate() {
         }
     }
     
-    axiosapi.post("/ktv-app/ktvbackend/rooms/create", room.value).then(response => {
+    axiosapi.post("/ktvbackend/rooms/create", room.value).then(response => {
         if (response.data.success) {
             Swal.fire({
                 icon: "success",
@@ -220,7 +220,7 @@ function callModify() {
         }
     }
     
-    axiosapi.put(`/ktv-app/ktvbackend/rooms/modify/${room.value.roomId}`, room.value).then(response => {
+    axiosapi.put(`/ktvbackend/rooms/modify/${room.value.roomId}`, room.value).then(response => {
         if (response.data.success) {
             Swal.fire({
                 icon: "success",

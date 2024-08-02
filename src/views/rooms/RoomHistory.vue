@@ -89,7 +89,7 @@ const findByTimeRange = async () => {
     });
 
     try {
-        const response = await axiosapi.get('/ktv-app/ktvbackend/roomHistory/findByTimeRange', {
+        const response = await axiosapi.get('/ktvbackend/roomHistory/findByTimeRange', {
             params: {
                 startDate: startDate.value,
                 endDate: endDate.value

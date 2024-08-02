@@ -196,7 +196,7 @@
             "category" : category.value,
             "itemName" : itemName.value
         }
-        axiosapi.post("/ktv-app/orderMenu/allMenu", request)
+        axiosapi.post("/orderMenu/allMenu", request)
                 .then(function(response) {
                     orderMenus.value = response.data.list;
                     total.value = response.data.count;
@@ -206,8 +206,6 @@
                     response.data.list.forEach(item => {
                         allMenus.value.set(item.itemId, item)
                     });
-                    console.log("orderMenu = ", response.data)
-
                 })
                 .catch()
     }

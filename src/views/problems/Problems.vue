@@ -86,15 +86,6 @@ const sortDirection = ref("asc"); // 默認排序方向
 
 // =========== 開啟時載入 ===========
 
-// onBeforeMount(() => {
-//   if (!sessionStorage.getItem("user")) {
-//     router.push("/secure/login");
-//   } else {
-//     callFind();
-//   }
-// });
-
-
   onBeforeMount (
         function() {
             if (!sessionStorage.getItem("user")) {
@@ -118,7 +109,7 @@ function openModal(action, problemId) {
 }
 
 function callFindById(problemId) {
-  axiosapi.get(`/ktv-app/ktvbackend/problems/findByProblemId/${problemId}`).then(response => {
+  axiosapi.get(`/ktvbackend/problems/findByProblemId/${problemId}`).then(response => {
     problem.value = response.data.list[0];
     problemRef.value.showModal();
   }).catch(error => {
@@ -133,7 +124,7 @@ function searchByRoomId() {
   if (searchRoomId.value.trim() === "") {
     callFind(); // 如果包廂號碼為空，則查詢所有資料
   } else {
-    axiosapi.get(`/ktv-app/ktvbackend/problems/findProblemsByRoom/${searchRoomId.value}`).then(response => {
+    axiosapi.get(`/ktvbackend/problems/findProblemsByRoom/${searchRoomId.value}`).then(response => {
       problems.value = response.data.list;
       total.value = response.data.count;
       pages.value = Math.ceil(total.value / rows.value);
@@ -164,7 +155,7 @@ function callModify() {
     }
   }
 
-  axiosapi.put(`/ktv-app/ktvbackend/problems/modify/${problem.value.problemId}`, problem.value)
+  axiosapi.put(`/ktvbackend/problems/modify/${problem.value.problemId}`, problem.value)
     .then(response => {
       if (response.data.success) {
         Swal.fire({
@@ -206,7 +197,7 @@ function callCreate() {
     }
   }
 
-  axiosapi.post("/ktv-app/ktvbackend/problems/create", problem.value).then(response => {
+  axiosapi.post("/ktvbackend/problems/create", problem.value).then(response => {
     if (response.data.success) {
       Swal.fire({
         icon: "success",
@@ -252,7 +243,7 @@ function callFind(page) {
     "sortDirection": sortDirection.value
   };
 
-  axiosapi.post('/ktv-app/ktvbackend/problems/findAll', request).then(response => {
+  axiosapi.post('/ktvbackend/problems/findAll', request).then(response => {
     problems.value = response.data.list;
     console.log("problems.value", problems.value)
     total.value = response.data.count;
