@@ -96,7 +96,7 @@
     }
 
     function detailList() {
-        axiosapi.get(`/ktv-app/orderDetail/${props.orderId}`)
+        axiosapi.get(`/orderDetail/${props.orderId}`)
                 .then(function(response) {
                     list.value = response.data.list;
                     total.value = response.data.total

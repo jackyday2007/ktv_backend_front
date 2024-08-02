@@ -77,7 +77,7 @@
                     allowOutsideClick: false,
                     showConfirmButton: false,
                 })
-                axiosapi.post("/ktv-app/orders/logout")
+                axiosapi.post("/orders/logout")
                         .then(function(response) {
                             if ( response.data.success ) {
                                 Swal.fire({

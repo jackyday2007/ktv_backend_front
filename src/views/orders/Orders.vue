@@ -200,107 +200,94 @@
         if ( order.value.startTime == '' ) {
             order.value.startTime = null;
         }
-
-
-        axiosapi.post("/ktv-app/roomCheck", order.value)
-                .then(function(response) {
-                    console.log("roomCheck.response = ", response.data.message)
-                    if ( response.data.success ) {
-                        axiosapi.post("/ktv-app/ktvbackend/orders/testNewOrder", order.value)
-                                .then(function( response ) {
-                                    console.log("response", response)
-                                    if ( response.data.success ) {
-                                        Swal.fire({
-                                            icon: "success",
-                                            text: response.data.message
-                                        }).then(function(result) {
-                                            orderModal.value.hideModal();
-                                            orderList(current.value)
-                                        })
-                                    }
-                                })
-                    } else {
-                        Swal.fire({
-                            icon: 'question',
-                            text: response.data.message,
-                            allowOutsideClick: false,
-                            showConfirmButton: true,
-                            showCancelButton: true,
-                        }).then(function(result) {
-                            if ( result.isConfirmed ) {
-                                axiosapi.post("/ktv-app/ktvbackend/orders/testNewOrder", order.value)
-                                .then(function( response ) {
-                                    console.log("response", response)
-                                    if ( response.data.success ) {
-                                        Swal.fire({
-                                            icon: "success",
-                                            text: '已預訂成功，請現場等候。'
-                                        }).then(function(result) {
-                                            orderModal.value.hideModal();
-                                            orderList(current.value)
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                    }
-                })
-                .catch(function( error) {
-                Swal.fire({
-                    icon: "error",
-                    text: "新增失敗" + error.message
-                })
+        if ( order.value.numberOfPersons == null ) {
+            Swal.fire({
+                icon: 'warning',
+                text: '請填寫人數'
             })
-
-    }
-
-    function modifyOrder() {
-        if ( order.value.numberOfPersons == "" ) {
-            order.value.numberOfPersons = null
-        }
-        if ( order.value.customerId == "" ) {
-            order.value.customerId = null
-        }
-        if ( order.value.orderDate == "" ) {
-            order.value.orderDate = null
-        }
-        if ( order.value.memberId == "" ) {
-            order.value.memberId = null
-        }
-        if ( order.value.room == "" ) {
-            order.value.room = null
-        }
-        if ( order.value.startTime == "" ) {
-            order.value.startTime = null
-        }
-        if ( order.value.subTotal == "" ) {
-            order.value.subTotal = null
-        }
-        axiosapi.put( `/ktv-app/ktvbackend/orders/newOrder/${order.value.orderId}`, order.value )
-        .then(function(response) {
-            console.log("modifyOrder.response = ", response);
-            if ( response.data.success ) {
+        } else {
+            if ( order.value.orderDate == null ) {
                 Swal.fire({
-                    icon: "success",
-                    text: response.data.message
-                }).then(function(result) {
-                    orderModal.value.hideModal();
-                    orderList(current.value)
+                    icon: 'warning',
+                    text: '請填寫預約日期'
                 })
             } else {
-                Swal.fire({
-                    icon: "warning",
-                    text: response.data.message,
-                })
+                if (order.value.hours == null) {
+                    Swal.fire({
+                        icon: 'warning',
+                        text: '請填寫歡唱時數'
+                    })
+                } else {
+                    if (order.value.startTime == null) {
+                        Swal.fire({
+                            icon: 'warning',
+                            text: '請填寫開始時間'
+                        })
+                    } else {
+                        axiosapi.post("/roomCheck", order.value)
+                                .then(function(response) {
+                                    if ( response.data.success ) {
+                                        axiosapi.post("/ktvbackend/orders/testNewOrder", order.value)
+                                                .then(function( response ) {
+                                                    if ( response.data.success ) {
+                                                        Swal.fire({
+                                                            icon: "success",
+                                                            text: response.data.message
+                                                        }).then(function(result) {
+                                                            orderModal.value.hideModal();
+                                                            orderList(current.value)
+                                                        })
+                                                    } else {
+                                                        Swal.fire({
+                                                            icon: 'warning',
+                                                            text: response.data.message
+                                                        })
+                                                    }
+                                                })
+                                } else {
+                                    Swal.fire({
+                                        icon: 'question',
+                                        text: response.data.message,
+                                        allowOutsideClick: false,
+                                        showConfirmButton: true,
+                                        showCancelButton: true,
+                                    }).then(function(result) {
+                                        if ( result.isConfirmed ) {
+                                            axiosapi.post("/ktvbackend/orders/testNewOrder", order.value)
+                                                    .then(function( response ) {
+                                                        if ( response.data.success ) {
+                                                            Swal.fire({
+                                                                icon: "success",
+                                                                text: '已預訂成功，請現場等候。'
+                                                            })
+                                                            .then(function(result) {
+                                                            orderModal.value.hideModal();
+                                                            orderList(current.value)
+                                                            })
+                                                        } else {
+                                                            Swal.fire({
+                                                                icon: 'warning',
+                                                                text: response.data.message
+                                                            })
+                                                        }
+                                                    })
+                                        }
+                                    })
+                                }
+                            })
+                            .catch(function( error) {
+                            Swal.fire({
+                                icon: "error",
+                                text: "新增失敗" + error.message
+                            })
+                        })
+                    }
+                }
             }
-        })
-        .catch(function(error){
-            Swal.fire({
-                icon:"error",
-                text:error.message
-            })
-        })
+        }
 
+        
+        
     }
 
     // 客戶報到
@@ -318,7 +305,7 @@
             order.value.numberOfPersons = null
         }
 
-        axiosapi.put( `/ktv-app/ktvbackend/orders/checkIn/${order.value.orderId}`, order.value )
+        axiosapi.put( `/ktvbackend/orders/checkIn/${order.value.orderId}`, order.value )
         .then(function(response) {
             console.log("modifyOrder.response = ", response);
             if ( response.data.success ) {
@@ -358,7 +345,7 @@
                     allowOutsideClick: false,
                     showConfirmButton: false,
                 })
-                axiosapi.post( `/ktv-app/ktvbackend/orders/noCheckIn/${order.value.orderId}`)
+                axiosapi.post( `/ktvbackend/orders/noCheckIn/${order.value.orderId}`)
                         .then(function(response) {
                             console.log("modifyOrder.response = ", response);
                             if ( response.data.success ) {
@@ -400,10 +387,10 @@
             order.value.hours = null
         }
 
-        axiosapi.get(`/ktv-app/ktvbackend/rooms/checkStatus/${order.value.room}`)
+        axiosapi.get(`/ktvbackend/rooms/checkStatus/${order.value.room}`)
                 .then(function(response) {
                     if (response.data.success) {
-                        axiosapi.put( `/ktv-app/ktvbackend/orders/inTheRoom/${order.value.orderId}`, order.value )
+                        axiosapi.put( `/ktvbackend/orders/inTheRoom/${order.value.orderId}`, order.value )
                                 .then(function(response) {
                                     if ( response.data.success ) {
                                         Swal.fire({
@@ -486,7 +473,7 @@
             "status" : status.value,
         }
 
-        axiosapi.post("/ktv-app/ktvbackend/orders/find", request)
+        axiosapi.post("/ktvbackend/orders/find", request)
             .then( function( response ) {
                 
                 orders.value = response.data.list;

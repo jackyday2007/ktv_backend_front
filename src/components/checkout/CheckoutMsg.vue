@@ -86,7 +86,7 @@
     }
 
     function detailList() {
-        axiosapi.get(`/ktv-app/orderDetail/${props.orderId}`)
+        axiosapi.get(`/orderDetail/${props.orderId}`)
                 .then(function(response) {
                     lists.value = response.data.list;
                     total.value = response.data.total
@@ -96,7 +96,7 @@
     }
 
     function checkoutList() {
-        axiosapi.get(`/ktv-app/checkout/${props.orderId}`)
+        axiosapi.get(`/checkout/${props.orderId}`)
                 .then(function(response) {
                     checkouts.value = response.data.list[0];
                     console.log("checkoutList.response = ", response.data.list[0]);
