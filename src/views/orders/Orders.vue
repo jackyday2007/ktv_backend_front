@@ -162,7 +162,7 @@
 
     // 尋找訂單編號
     function callFindByOrderId( id ) {
-        axiosapi.get(`/ktv-app/ktvbackend/orders/${id}`)
+        axiosapi.get(`/ktvbackend/orders/${id}`)
         .then(function(response) {
             order.value = response.data.list[0];
         })

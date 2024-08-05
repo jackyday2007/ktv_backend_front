@@ -441,8 +441,6 @@
             customer.value.idNumber = null;
         }
         if ( customer.value.idNumber != null ) {
-            console.log("查詢")
-            console.log("OrderModal.idNumber = ", customer.value.idNumber)
             axiosapi(`/customer/${customer.value.idNumber}`)
                 .then(function(response) {
                     if ( response.data != null ) {
@@ -454,8 +452,11 @@
                                 ...props.modelValue,
                                 customerId : response.data.list[0].customerId
                             })
-                            customer.value = ''
-                            result.value = ''
+                            console.log("response.data.success", response.data.success)
+                            if ( response.data.success ) {
+                                customer.value = ''
+                                result.value = ''
+                            }
                         } else {
                             result.value = response.data.message
                         }
