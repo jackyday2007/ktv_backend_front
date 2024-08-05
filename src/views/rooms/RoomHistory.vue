@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3 class="heading">包廂紀錄查詢</h3>
+        <h3 class="heading">訂單紀錄查詢</h3>
         <div class="input-group mb-3">
             <span class="input-group-text">選擇日期範圍</span>
             <input type="date" v-model="startDate" class="form-control">
@@ -12,7 +12,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>訂單號碼</th>
                     <th>包廂號碼</th>
                     <th>包廂尺寸</th>
@@ -24,7 +23,6 @@
             </thead>
             <tbody>
                 <tr v-for="item in paginatedRooms" :key="item.id">
-                    <td>{{ item.id }}</td>
                     <td>{{ item.orderId }}</td>
                     <td>{{ item.roomId }}</td>
                     <td>{{ item.size }}</td>
@@ -34,7 +32,7 @@
                     <td>{{ item.status }}</td>
                 </tr>
                 <tr v-if="paginatedRooms.length === 0">
-                    <td colspan="8" class="text-center">沒有資料</td>
+                    <td colspan="7" class="text-center">沒有資料</td>
                 </tr>
             </tbody>
         </table>
@@ -76,15 +74,35 @@ const endDate = ref("");
 const currentPage = ref(0);
 const pageSize = ref(8);
 
-onBeforeMount (
-        function() {
-            if (!sessionStorage.getItem("user")) {
-                router.push("/secure/login")
-            }
-        }
-    )
+onBeforeMount(() => {
+    if (!sessionStorage.getItem("user")) {
+        router.push("/secure/login");
+    }
+});
 
 const findByTimeRange = async () => {
+    // 檢查日期範圍是否為空
+    if (!startDate.value || !endDate.value) {
+        Swal.fire({
+            icon: 'warning',
+            text: '請選擇完整的日期範圍。',
+            showConfirmButton: true // 顯示確定按鈕
+        });
+        return; // 取消查詢
+    }
+
+    // 檢查結束時間是否小於開始時間
+    const start = new Date(startDate.value);
+    const end = new Date(endDate.value);
+    if (end < start) {
+        Swal.fire({
+            icon: 'warning',
+            text: '結束時間不能小於開始時間。',
+            showConfirmButton: true // 顯示確定按鈕
+        });
+        return; // 取消查詢
+    }
+
     Swal.fire({
         text: "執行中......",
         allowOutsideClick: false,
@@ -102,12 +120,23 @@ const findByTimeRange = async () => {
         // 排序資料（日期最新在最前面）
         rooms.value = response.data.list.sort((a, b) => new Date(b.date) - new Date(a.date));
         currentPage.value = 0; // Reset to the first page
+
+        // 檢查是否有資料
+        if (rooms.value.length === 0) {
+            Swal.fire({
+                icon: 'info',
+                text: '此區間內訂單無資料。',
+                showConfirmButton: true // 顯示確定按鈕
+            });
+        }
+
         Swal.close();
     } catch (error) {
         console.log('error=', error);
         Swal.fire({
             icon: 'error',
             text: '查詢失敗: ' + error.message,
+            showConfirmButton: true // 顯示確定按鈕
         });
     }
 };

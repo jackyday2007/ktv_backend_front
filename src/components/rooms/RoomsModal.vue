@@ -96,15 +96,15 @@ function handleSubmit(action) {
       if (warnings.value[key]) isValid = false;
     }
 
-    // // 新增模式下，包廂狀態只能是「開放中」
-    // if (props.isShowInsertButton && props.modelValue.status !== '開放中') {
-    //   warnings.value.status = true;
-    //   Swal.fire({
-    //     icon: 'warning',
-    //     title:'新增時包廂狀態只能為開放中⚠',
-    //   });
-    //   isValid = false;
-    // }
+    // 新增模式下，包廂狀態只能是「開放中」
+    if (props.isShowInsertButton && props.modelValue.status !== '開放中') {
+      warnings.value.status = true;
+      Swal.fire({
+        icon: 'warning',
+        text:'新增時包廂狀態只能為開放中⚠',
+      });
+      isValid = false;
+    }
 
     if (!isValid) return;
   }

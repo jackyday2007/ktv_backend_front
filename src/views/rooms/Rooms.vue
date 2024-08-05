@@ -193,7 +193,7 @@ function callCreate() {
             });
         } else {
             Swal.fire({
-                icon: "warning",
+                icon: "error",
                 text: response.data.message,
             });
         }

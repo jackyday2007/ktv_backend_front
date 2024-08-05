@@ -26,10 +26,10 @@
 
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faImage } from '@fortawesome/free-solid-svg-icons';
+import axiosapi from '@/plugins/axios';
 
 library.add(faImage);
 
@@ -52,7 +52,7 @@ function uploadPhoto() {
   formData.append('photoName', photoName.value);
   formData.append('photoFile', photoFile.value);
 
-  axios.post('/ktvbackend/photos/uploadPost', formData, {
+  axiosapi.post('/photos/uploadPost', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   })
   .then(function(response) {
