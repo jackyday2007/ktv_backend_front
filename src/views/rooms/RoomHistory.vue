@@ -117,8 +117,14 @@ const findByTimeRange = async () => {
             }
         });
 
-        // 排序資料（日期最新在最前面）
-        rooms.value = response.data.list.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // 如果orderId重複只呈現每個 orderId id 最大的記錄
+        const latestOrders = new Map();
+        response.data.list.forEach(item => {
+            if (!latestOrders.has(item.orderId) || item.id > latestOrders.get(item.orderId).id) {
+                latestOrders.set(item.orderId, item);
+            }
+        });
+        rooms.value = Array.from(latestOrders.values()).sort((a, b) => b.createTime.localeCompare(a.createTime));
         currentPage.value = 0; // Reset to the first page
 
         // 檢查是否有資料
