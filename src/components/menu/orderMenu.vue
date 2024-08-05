@@ -53,7 +53,7 @@
                 v-for=" item in orderMenus "
                 :key="item.itemId"
                 >
-                    <td><input type="checkbox" class="form-check-input me-1" :value="item.itemId" @change="updateCheckedItems(item.itemId, $event)" :checked="isChecked(item.itemId)"></td>
+                    <td><input type="checkbox" class="form-check-input me-1" :value="item.itemId" v-if="item.status == '上架'" @change="updateCheckedItems(item.itemId, $event)" :checked="isChecked(item.itemId)"></td>
                     <td>{{ item.category }}</td>
                     <td>{{ item.itemName }}</td>
                     <td>{{ item.capacity }}</td>
