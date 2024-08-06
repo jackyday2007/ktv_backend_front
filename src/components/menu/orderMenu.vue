@@ -53,12 +53,12 @@
                 v-for=" item in orderMenus "
                 :key="item.itemId"
                 >
-                    <td><input type="checkbox" class="form-check-input me-1" :value="item.itemId" v-if="item.status == '上架'" @change="updateCheckedItems(item.itemId, $event)" :checked="isChecked(item.itemId)"></td>
-                    <td>{{ item.category }}</td>
-                    <td>{{ item.itemName }}</td>
-                    <td>{{ item.capacity }}</td>
-                    <td>{{ item.price }}</td>
-                    <td style="width: 17%;"><input type="text" :disabled="!isChecked(item.itemId)" style="width: 30%;" v-model="itemInputs[item.itemId]"></td>
+                    <td v-if="item.status == '上架'" ><input type="checkbox" class="form-check-input me-1" :value="item.itemId" @change="updateCheckedItems(item.itemId, $event)" :checked="isChecked(item.itemId)"></td>
+                    <td v-if="item.status == '上架'" >{{ item.category }}</td>
+                    <td v-if="item.status == '上架'" >{{ item.itemName }}</td>
+                    <td v-if="item.status == '上架'" >{{ item.capacity }}</td>
+                    <td v-if="item.status == '上架'" >{{ item.price }}</td>
+                    <td v-if="item.status == '上架'"  style="width: 17%;"><input type="text" :disabled="!isChecked(item.itemId)" style="width: 30%;" v-model="itemInputs[item.itemId]"></td>
                 </tr>
             </tbody>
         </table>
